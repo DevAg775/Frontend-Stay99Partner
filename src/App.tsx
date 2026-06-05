@@ -1,4 +1,4 @@
-// import { useEffect } from "react";
+import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
 import {
   ArrowRight,
   BadgeCheck,
@@ -11,9 +11,12 @@ import {
   ChevronUp,
   Clock,
   FileCheck2,
+  Instagram,
+  Linkedin,
   Mail,
   Phone,
   ShieldCheck,
+  Twitter,
   UserPlus,
   Zap,
 } from "lucide-react";
@@ -22,13 +25,17 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 
-import { FallbackComponent } from "./CustomComponents";
+import Login from "./pages/Login";
+import Register from "./pages/Register";
+import ForgotPassword from "./pages/ForgotPassword";
+import Dashboard from "./pages/Dashboard";
+import SubmitProperty from "./pages/SubmitProperty";
 
-export default function App() {
+function Home() {
   return (
     <div>
-      <div className="bg-white text-neutral-950 w-full h-fit h-fit min-h-screen w-screen min-w-screen max-w-screen overflow-visible">
-        <nav className="sticky z-50 bg-white border-neutral-200 border-t-0 border-r-0 border-b border-l-0 border-solid top-0 w-full">
+      <div className="bg-white text-neutral-950 w-full min-h-screen overflow-visible">
+        <nav className="sticky z-50 bg-white border-neutral-200 border-b border-solid top-0 w-full">
           <div className="max-w-[1140px] flex mx-auto px-8 justify-between items-center h-16">
             <div className="flex items-center gap-2">
               <div className="size-8 rounded-lg bg-indigo-600 flex justify-center items-center">
@@ -39,36 +46,36 @@ export default function App() {
               </span>
             </div>
             <div className="flex items-center gap-8">
-              <a className="font-medium text-neutral-500 text-sm leading-5">
+              <a href="#how-it-works" className="font-medium text-neutral-500 text-sm leading-5">
                 How It Works
               </a>
-              <a className="font-medium text-neutral-500 text-sm leading-5">
+              <a href="#benefits" className="font-medium text-neutral-500 text-sm leading-5">
                 Benefits
               </a>
-              <a className="font-medium text-neutral-500 text-sm leading-5">
+              <a href="#faqs" className="font-medium text-neutral-500 text-sm leading-5">
                 FAQs
               </a>
-              <a className="font-medium text-neutral-500 text-sm leading-5">
+              <a href="#contact" className="font-medium text-neutral-500 text-sm leading-5">
                 Contact
               </a>
             </div>
             <div className="flex items-center gap-2">
-              <Button
-                variant="ghost"
-                className="font-medium text-slate-900 text-sm leading-5"
-              >
-                Login
+              <Button variant="ghost" asChild>
+                <Link to="/login" className="font-medium text-slate-900 text-sm leading-5">
+                  Login
+                </Link>
               </Button>
-              <Button className="font-medium rounded-lg bg-indigo-600 text-white text-sm leading-5">
-                Register Your Property
+              <Button className="font-medium rounded-lg bg-indigo-600 text-white text-sm leading-5" asChild>
+                <Link to="/register">Register Your Property</Link>
               </Button>
             </div>
           </div>
         </nav>
+
         <section className="bg-[linear-gradient(135deg,#ffffff_0%,#eef0fc_100%)] w-full">
           <div className="max-w-[1140px] grid grid-cols-2 mx-auto px-8 py-12 items-center gap-12">
             <div className="flex flex-col gap-6">
-              <h1 className="leading-tight font-bold text-slate-900 text-5xl leading-12">
+              <h1 className="font-bold text-slate-900 text-5xl ">
                 Get Your Property
                 <br />
                 {`Listed &`}
@@ -82,11 +89,13 @@ export default function App() {
                 platform.
               </p>
               <div className="flex items-center gap-6">
-                <Button className="font-semibold rounded-lg bg-indigo-600 text-white text-sm leading-5 px-6 py-5">
-                  Register Your Property
-                  <ArrowRight className="size-4 ml-1" />
+                <Button className="font-semibold rounded-lg bg-indigo-600 text-white text-sm leading-5 px-6 py-5" asChild>
+                  <Link to="/register">
+                    Register Your Property
+                    <ArrowRight className="size-4 ml-1" />
+                  </Link>
                 </Button>
-                <a className="cursor-pointer font-medium text-slate-900 text-sm leading-5 flex items-center gap-1">
+                <a href="#how-it-works" className="cursor-pointer font-medium text-slate-900 text-sm leading-5 flex items-center gap-1">
                   See How It Works
                   <ChevronRight className="size-4" />
                 </a>
@@ -129,10 +138,6 @@ export default function App() {
                       src="https://images.unsplash.com/photo-1771293549382-62829fad8f2d?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3ODc2NDd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBsdXh1cnklMjBob3RlbCUyMGJ1aWxkaW5nJTIwZXh0ZXJpb3J8ZW58MXwwfHx8MTc4MDU4NTQ4NHww&ixlib=rb-4.1.0&q=80&w=400"
                       alt="Hotel"
                       className="object-cover w-full h-full"
-                      data-photoid="LPx6qAimByw"
-                      data-authorname="Darien Attridge"
-                      data-authorurl="https://unsplash.com/@dariendesigns"
-                      data-blurhash="L:M7W2IAofjZ_NRjRjj[xuxuRjfR"
                     />
                   </div>
                   <div className="flex flex-col gap-1">
@@ -161,7 +166,8 @@ export default function App() {
             </div>
           </div>
         </section>
-        <section className="bg-slate-50 w-full">
+
+        <section id="benefits" className="bg-slate-50 w-full">
           <div className="max-w-[1140px] flex mx-auto px-8 py-12 flex-col gap-8">
             <h2 className="font-bold text-center text-slate-900 text-3xl leading-9">
               Why Property Owners Choose Us
@@ -218,13 +224,14 @@ export default function App() {
             </div>
           </div>
         </section>
-        <section className="bg-white w-full">
+
+        <section id="how-it-works" className="bg-white w-full">
           <div className="max-w-[1140px] flex mx-auto px-8 py-12 flex-col gap-8">
             <h2 className="font-bold text-center text-slate-900 text-3xl leading-9">
               How It Works
             </h2>
             <div className="grid grid-cols-4 relative gap-2">
-              <div className="left-[12%] right-[12%] border-neutral-200 border-t-2 border-r-0 border-b-0 border-l-0 border-dashed absolute top-6" />
+              <div className="left-[12%] right-[12%] border-neutral-200 border-t-2 border-dashed absolute top-6" />
               <div className="relative text-center flex px-2 flex-col items-center gap-3">
                 <div className="size-12 z-10 font-bold rounded-full bg-indigo-600 text-white text-lg leading-7 flex justify-center items-center">
                   1
@@ -270,41 +277,29 @@ export default function App() {
             </div>
           </div>
         </section>
+
         <section className="bg-[#eef0fc] w-full">
           <div className="max-w-[1140px] grid grid-cols-4 mx-auto px-8 py-12 gap-6">
             <div className="text-center flex flex-col items-center gap-1">
-              <span className="font-bold text-slate-900 text-3xl leading-9">
-                2,400+
-              </span>
-              <span className="text-neutral-500 text-sm leading-5">
-                Properties Listed
-              </span>
+              <span className="font-bold text-slate-900 text-3xl leading-9">2,400+</span>
+              <span className="text-neutral-500 text-sm leading-5">Properties Listed</span>
             </div>
             <div className="text-center flex flex-col items-center gap-1">
-              <span className="font-bold text-slate-900 text-3xl leading-9">
-                98%
-              </span>
-              <span className="text-neutral-500 text-sm leading-5">
-                Approval Rate
-              </span>
+              <span className="font-bold text-slate-900 text-3xl leading-9">98%</span>
+              <span className="text-neutral-500 text-sm leading-5">Approval Rate</span>
             </div>
             <div className="text-center flex flex-col items-center gap-1">
-              <span className="font-bold text-slate-900 text-3xl leading-9">
-                48hr
-              </span>
-              <span className="text-neutral-500 text-sm leading-5">
-                Avg. Review Time
-              </span>
+              <span className="font-bold text-slate-900 text-3xl leading-9">48hr</span>
+              <span className="text-neutral-500 text-sm leading-5">Avg. Review Time</span>
             </div>
             <div className="text-center flex flex-col items-center gap-1">
-              <span className="font-bold text-slate-900 text-3xl leading-9">
-                100%
-              </span>
+              <span className="font-bold text-slate-900 text-3xl leading-9">100%</span>
               <span className="text-neutral-500 text-sm leading-5">{`Secure & Verified`}</span>
             </div>
           </div>
         </section>
-        <section className="bg-white w-full">
+
+        <section id="faqs" className="bg-white w-full">
           <div className="max-w-[1140px] flex mx-auto px-8 py-12 flex-col gap-6">
             <h2 className="font-bold text-slate-900 text-3xl leading-9">
               Frequently Asked Questions
@@ -357,7 +352,8 @@ export default function App() {
             </div>
           </div>
         </section>
-        <section className="bg-slate-50 w-full">
+
+        <section id="contact" className="bg-slate-50 w-full">
           <div className="max-w-[1140px] grid grid-cols-2 mx-auto px-8 py-12 items-start gap-12">
             <div className="flex flex-col gap-6">
               <div className="flex flex-col gap-2">
@@ -406,10 +402,7 @@ export default function App() {
                   <label className="font-medium text-slate-900 text-sm leading-5">
                     Message
                   </label>
-                  <Textarea
-                    placeholder="How can we help?"
-                    className="min-h-24"
-                  />
+                  <Textarea placeholder="How can we help?" className="min-h-24" />
                 </div>
                 <Button className="font-semibold rounded-lg bg-indigo-600 text-white text-sm leading-5">
                   Send Message
@@ -418,6 +411,7 @@ export default function App() {
             </Card>
           </div>
         </section>
+
         <footer className="bg-slate-900 text-white w-full">
           <div className="max-w-[1140px] flex mx-auto px-8 py-12 flex-col gap-8">
             <div className="grid grid-cols-3 gap-8">
@@ -426,9 +420,7 @@ export default function App() {
                   <div className="size-8 rounded-lg bg-indigo-600 flex justify-center items-center">
                     <ShieldCheck className="size-5 text-white" />
                   </div>
-                  <span className="font-bold text-lg leading-7">
-                    PropVerify
-                  </span>
+                  <span className="font-bold text-lg leading-7">PropVerify</span>
                 </div>
                 <p className="max-w-xs text-slate-400 text-sm leading-5">
                   Simplifying property onboarding for hospitality businesses
@@ -436,36 +428,30 @@ export default function App() {
                 </p>
               </div>
               <div className="flex flex-col gap-3">
-                <span className="font-semibold text-sm leading-5">
-                  Quick Links
-                </span>
-                <a className="text-slate-400 text-sm leading-5">Home</a>
-                <a className="text-slate-400 text-sm leading-5">How It Works</a>
-                <a className="text-slate-400 text-sm leading-5">Register</a>
-                <a className="text-slate-400 text-sm leading-5">Login</a>
+                <span className="font-semibold text-sm leading-5">Quick Links</span>
+                <Link to="/" className="text-slate-400 text-sm leading-5">Home</Link>
+                <a href="#how-it-works" className="text-slate-400 text-sm leading-5">How It Works</a>
+                <Link to="/register" className="text-slate-400 text-sm leading-5">Register</Link>
+                <Link to="/login" className="text-slate-400 text-sm leading-5">Login</Link>
               </div>
               <div className="flex flex-col gap-3">
                 <span className="font-semibold text-sm leading-5">Contact</span>
                 <div className="flex items-center gap-2">
                   <Mail className="size-4 text-slate-400" />
-                  <span className="text-slate-400 text-sm leading-5">
-                    support@propverify.in
-                  </span>
+                  <span className="text-slate-400 text-sm leading-5">support@propverify.in</span>
                 </div>
                 <div className="flex items-center gap-2">
                   <Phone className="size-4 text-slate-400" />
-                  <span className="text-slate-400 text-sm leading-5">
-                    1800-XXX-XXXX
-                  </span>
+                  <span className="text-slate-400 text-sm leading-5">1800-XXX-XXXX</span>
                 </div>
                 <div className="flex pt-1 items-center gap-3">
-                  <FallbackComponent className="size-5 text-slate-400" />
-                  <FallbackComponent className="size-5 text-slate-400" />
-                  <FallbackComponent className="size-5 text-slate-400" />
+                  <Twitter className="size-5 text-slate-400 cursor-pointer hover:text-white transition-colors" />
+                  <Linkedin className="size-5 text-slate-400 cursor-pointer hover:text-white transition-colors" />
+                  <Instagram className="size-5 text-slate-400 cursor-pointer hover:text-white transition-colors" />
                 </div>
               </div>
             </div>
-            <div className="border-slate-700 border-t border-r-0 border-b-0 border-l-0 border-solid pt-6">
+            <div className="border-slate-700 border-t border-solid pt-6">
               <p className="text-center text-slate-500 text-xs leading-4">
                 © 2025 PropVerify. All rights reserved.
               </p>
@@ -474,5 +460,20 @@ export default function App() {
         </footer>
       </div>
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Home />} />
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/submit-property" element={<SubmitProperty />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
