@@ -1,9 +1,10 @@
-
+import { useState } from "react";
 import {
   Check,
   CheckCircle2,
   ChevronDown,
   Eye,
+  EyeOff,
   Lock,
   Mail,
   Phone,
@@ -16,12 +17,80 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Checkbox } from "@/components/ui/checkbox";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import API from "../api";
 
-export default function Screen3() {
+export default function Register() {
+  const navigate = useNavigate();
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    mobile: "",
+    password: "",
+    confirmPassword: "",
+    acceptedTerms: false,
+    acceptedPrivacy: false,
+    declarationAccepted: true,
+  });
+
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const getPasswordStrength = (password: string) => {
+    if (password.length === 0) return { strength: 0, label: "", color: "" };
+    if (password.length < 6) return { strength: 1, label: "Weak", color: "bg-red-500" };
+    if (password.length < 10) return { strength: 2, label: "Medium", color: "bg-yellow-500" };
+    return { strength: 3, label: "Strong", color: "bg-emerald-500" };
+  };
+
+  const passwordStrength = getPasswordStrength(formData.password);
+
+  const handleSubmit = async () => {
+    setError("");
+
+    if (!formData.fullName || !formData.email || !formData.mobile || !formData.password) {
+      setError("All fields are required");
+      return;
+    }
+
+    if (formData.password !== formData.confirmPassword) {
+      setError("Passwords do not match");
+      return;
+    }
+
+    if (!formData.acceptedTerms || !formData.acceptedPrivacy) {
+      setError("Please accept Terms of Service and Privacy Policy");
+      return;
+    }
+
+    try {
+      setLoading(true);
+      const res = await API.post("/auth/register", {
+        fullName: formData.fullName,
+        email: formData.email,
+        mobile: formData.mobile,
+        password: formData.password,
+        acceptedTerms: formData.acceptedTerms,
+        acceptedPrivacy: formData.acceptedPrivacy,
+        declarationAccepted: formData.declarationAccepted,
+      });
+
+      localStorage.setItem("token", res.data.token);
+      localStorage.setItem("user", JSON.stringify(res.data.user));
+      navigate("/dashboard");
+    } catch (err: any) {
+      setError(err.response?.data?.message || "Registration failed");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div>
-      <div className="bg-white text-neutral-950 w-full h-fit min-h-screen min-w-screen max-w-screen overflow-visible">
+      <div className="bg-white text-neutral-950 w-full h-fit min-h-screen overflow-visible">
         <div className="flex w-full h-239 overflow-hidden">
           <div className="relative w-1/2 bg-[linear-gradient(155deg,#4F46E5_0%,#312E81_55%,#1E1B4B_100%)] text-white flex p-12 flex-col justify-between">
             <div className="flex items-center gap-2">
@@ -34,7 +103,7 @@ export default function Screen3() {
             </div>
             <div className="flex flex-col gap-8">
               <div className="flex flex-col gap-4">
-                <h1 className=" font-bold text-white text-4xl leading-10 tracking-tight">
+                <h1 className="font-bold text-white text-4xl leading-tight tracking-tight">
                   Start Your Property Onboarding Journey
                 </h1>
                 <p className="max-w-md text-indigo-200 text-base leading-6">
@@ -76,9 +145,9 @@ export default function Screen3() {
                   <Star className="size-4 fill-amber-400 text-amber-400" />
                   <Star className="size-4 fill-amber-400 text-amber-400" />
                 </div>
-                <p className=" text-white text-sm leading-5">
-                  “The verification process was smooth and transparent. Got
-                  approved within 2 days!”
+                <p className="text-white text-sm leading-5">
+                  "The verification process was smooth and transparent. Got
+                  approved within 2 days!"
                 </p>
                 <div className="flex items-center gap-3">
                   <div className="size-10 ring-2 ring-white/30 rounded-full overflow-hidden">
@@ -86,10 +155,6 @@ export default function Screen3() {
                       src="https://images.unsplash.com/photo-1655048424687-29c152741a90?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3ODc2NDd8MHwxfHNlYXJjaHwxfHxpbmRpYW4lMjBidXNpbmVzc21hbiUyMHByb2Zlc3Npb25hbCUyMGhlYWRzaG90JTIwcG9ydHJhaXR8ZW58MXwyfHx8MTc4MDU3NTQyMnww&ixlib=rb-4.1.0&q=80&w=400"
                       alt="Rajesh Kumar"
                       className="object-cover w-full h-full"
-                      data-photoid="iFBwCKkF7Ns"
-                      data-authorname="Erick Matahine"
-                      data-authorurl="https://unsplash.com/@erick_matahine"
-                      data-blurhash="L23[VcS60KxA^jWV57s:ngn#Nebd"
                     />
                   </div>
                   <div className="flex flex-col">
@@ -104,6 +169,7 @@ export default function Screen3() {
               </CardContent>
             </Card>
           </div>
+
           <div className="w-1/2 bg-white flex p-12 justify-center items-center">
             <div className="max-w-md flex flex-col gap-6 w-full">
               <div className="flex items-center gap-2">
@@ -117,10 +183,19 @@ export default function Screen3() {
                   Create your account
                 </h2>
                 <p className="text-neutral-500 text-sm leading-5">
-  Already have an account?
-  <Link to="/login" className="font-medium  text-indigo-600">Sign in</Link>
-</p>
+                  Already have an account?{" "}
+                  <Link to="/login" className="font-medium text-indigo-600">
+                    Sign in
+                  </Link>
+                </p>
               </div>
+
+              {error && (
+                <div className="rounded-lg bg-red-50 border border-red-200 px-4 py-3 text-red-600 text-sm">
+                  {error}
+                </div>
+              )}
+
               <div className="flex flex-col gap-4">
                 <div className="flex flex-col gap-2">
                   <Label className="font-medium text-neutral-950 text-sm leading-5">
@@ -131,9 +206,12 @@ export default function Screen3() {
                     <Input
                       className="rounded-lg bg-neutral-100 border-neutral-200 border-0 border-solid pl-9 h-11"
                       placeholder="Enter your full name"
+                      value={formData.fullName}
+                      onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                     />
                   </div>
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label className="font-medium text-neutral-950 text-sm leading-5">
                     Email Address
@@ -143,9 +221,13 @@ export default function Screen3() {
                     <Input
                       className="rounded-lg bg-neutral-100 border-neutral-200 border-0 border-solid pl-9 h-11"
                       placeholder="you@example.com"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
                     />
                   </div>
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label className="font-medium text-neutral-950 text-sm leading-5">
                     Mobile Number
@@ -161,10 +243,13 @@ export default function Screen3() {
                       <Input
                         className="rounded-lg bg-neutral-100 border-neutral-200 border-0 border-solid pl-9 h-11"
                         placeholder="+91 XXXXX XXXXX"
+                        value={formData.mobile}
+                        onChange={(e) => setFormData({ ...formData, mobile: e.target.value })}
                       />
                     </div>
                   </div>
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label className="font-medium text-neutral-950 text-sm leading-5">
                     Password
@@ -172,23 +257,38 @@ export default function Screen3() {
                   <div className="relative">
                     <Lock className="top-1/2 size-4 -translate-y-1/2 text-neutral-500 absolute left-3" />
                     <Input
-                      type="password"
+                      type={showPassword ? "text" : "password"}
                       className="rounded-lg bg-neutral-100 border-neutral-200 border-0 border-solid px-9 h-11"
                       placeholder="••••••••"
+                      value={formData.password}
+                      onChange={(e) => setFormData({ ...formData, password: e.target.value })}
                     />
-                    <Eye className="top-1/2 size-4 -translate-y-1/2 cursor-pointer text-neutral-500 absolute right-3" />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="top-1/2 -translate-y-1/2 absolute right-3"
+                    >
+                      {showPassword ? (
+                        <EyeOff className="size-4 text-neutral-500" />
+                      ) : (
+                        <Eye className="size-4 text-neutral-500" />
+                      )}
+                    </button>
                   </div>
-                  <div className="flex pt-0.5 items-center gap-2">
-                    <div className="flex flex-1 gap-1 h-1.5">
-                      <div className="rounded-full bg-emerald-500 flex-1" />
-                      <div className="rounded-full bg-emerald-500 flex-1" />
-                      <div className="rounded-full bg-emerald-500 flex-1" />
+                  {formData.password.length > 0 && (
+                    <div className="flex pt-0.5 items-center gap-2">
+                      <div className="flex flex-1 gap-1 h-1.5">
+                        <div className={`rounded-full flex-1 ${passwordStrength.strength >= 1 ? passwordStrength.color : "bg-neutral-200"}`} />
+                        <div className={`rounded-full flex-1 ${passwordStrength.strength >= 2 ? passwordStrength.color : "bg-neutral-200"}`} />
+                        <div className={`rounded-full flex-1 ${passwordStrength.strength >= 3 ? passwordStrength.color : "bg-neutral-200"}`} />
+                      </div>
+                      <span className={`font-medium text-xs leading-4 ${passwordStrength.strength === 3 ? "text-emerald-600" : passwordStrength.strength === 2 ? "text-yellow-600" : "text-red-600"}`}>
+                        {passwordStrength.label}
+                      </span>
                     </div>
-                    <span className="font-medium text-emerald-600 text-xs leading-4">
-                      Strong
-                    </span>
-                  </div>
+                  )}
                 </div>
+
                 <div className="flex flex-col gap-2">
                   <Label className="font-medium text-neutral-950 text-sm leading-5">
                     Confirm Password
@@ -196,60 +296,74 @@ export default function Screen3() {
                   <div className="relative">
                     <Lock className="top-1/2 size-4 -translate-y-1/2 text-neutral-500 absolute left-3" />
                     <Input
-                      type="password"
+                      type={showConfirmPassword ? "text" : "password"}
                       className="rounded-lg bg-neutral-100 border-neutral-200 border-0 border-solid pl-9 pr-16 h-11"
                       placeholder="••••••••"
+                      value={formData.confirmPassword}
+                      onChange={(e) => setFormData({ ...formData, confirmPassword: e.target.value })}
                     />
                     <div className="top-1/2 -translate-y-1/2 flex absolute right-3 items-center gap-2">
-                      <CheckCircle2 className="size-4 text-emerald-600" />
-                      <Eye className="size-4 cursor-pointer text-neutral-500" />
+                      {formData.confirmPassword.length > 0 && formData.password === formData.confirmPassword && (
+                        <CheckCircle2 className="size-4 text-emerald-600" />
+                      )}
+                      <button type="button" onClick={() => setShowConfirmPassword(!showConfirmPassword)}>
+                        {showConfirmPassword ? (
+                          <EyeOff className="size-4 text-neutral-500" />
+                        ) : (
+                          <Eye className="size-4 cursor-pointer text-neutral-500" />
+                        )}
+                      </button>
                     </div>
                   </div>
                 </div>
+
                 <div className="flex pt-1 items-start gap-2">
-                  <Checkbox className="border-neutral-200 border-0 border-solid mt-0.5" />
-<Label className="font-normal text-neutral-500 text-sm leading-5">                    I agree to the
-                    <a className="font-medium text-neutral-900">
-                      Terms of Service
-                    </a>
-                    and
-                    <a className="font-medium text-neutral-900">
-                      Privacy Policy
-                    </a>
+                  <Checkbox
+                    className="border-neutral-200 mt-0.5"
+                    checked={formData.acceptedTerms && formData.acceptedPrivacy}
+                    onCheckedChange={(checked) =>
+                      setFormData({
+                        ...formData,
+                        acceptedTerms: !!checked,
+                        acceptedPrivacy: !!checked,
+                      })
+                    }
+                  />
+                  <Label className="font-normal text-neutral-500 text-sm leading-5">
+                    I agree to the{" "}
+                    <a className="font-medium text-neutral-900 cursor-pointer">Terms of Service</a>
+                    {" "}and{" "}
+                    <a className="font-medium text-neutral-900 cursor-pointer">Privacy Policy</a>
                   </Label>
                 </div>
-                <Button className="font-semibold rounded-lg bg-neutral-900 text-neutral-50 text-sm leading-5 w-full h-11">
-                  Create Account
+
+                <Button
+                  className="font-semibold rounded-lg bg-neutral-900 text-neutral-50 text-sm leading-5 w-full h-11"
+                  onClick={handleSubmit}
+                  disabled={loading}
+                >
+                  {loading ? "Creating Account..." : "Create Account"}
                 </Button>
+
                 <div className="flex items-center gap-4">
                   <div className="bg-neutral-200 flex-1 h-px" />
                   <span className="text-neutral-500 text-xs leading-4">or</span>
                   <div className="bg-neutral-200 flex-1 h-px" />
                 </div>
+
                 <Button
                   variant="outline"
-                  className="font-medium rounded-lg bg-white text-neutral-950 text-sm leading-5 border-neutral-200 border-0 border-solid gap-2 w-full h-11"
+                  className="font-medium rounded-lg bg-white text-neutral-950 text-sm leading-5 border-neutral-200 gap-2 w-full h-11"
                 >
                   <svg className="size-4" viewBox="0 0 24 24">
-                    <path
-                      fill="#4285F4"
-                      d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1Z"
-                    />
-                    <path
-                      fill="#34A853"
-                      d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z"
-                    />
-                    <path
-                      fill="#FBBC05"
-                      d="M5.84 14.1a6.6 6.6 0 0 1 0-4.22V7.04H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z"
-                    />
-                    <path
-                      fill="#EA4335"
-                      d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.04L5.84 9.88C6.71 7.31 9.14 5.38 12 5.38Z"
-                    />
+                    <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 0 1-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1Z" />
+                    <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84A11 11 0 0 0 12 23Z" />
+                    <path fill="#FBBC05" d="M5.84 14.1a6.6 6.6 0 0 1 0-4.22V7.04H2.18a11 11 0 0 0 0 9.9l3.66-2.84Z" />
+                    <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1A11 11 0 0 0 2.18 7.04L5.84 9.88C6.71 7.31 9.14 5.38 12 5.38Z" />
                   </svg>
                   Continue with Google
                 </Button>
+
                 <p className="text-center text-neutral-500 text-xs leading-4">
                   Free to register. No credit card required.
                 </p>

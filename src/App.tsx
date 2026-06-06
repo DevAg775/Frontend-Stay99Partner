@@ -24,6 +24,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
+import ComingSoon from "./pages/ComingSoon";
 
 import Login from "./pages/Login";
 import Register from "./pages/Register";
@@ -473,6 +474,12 @@ export default function App() {
         <Route path="/forgot-password" element={<ForgotPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/submit-property" element={<SubmitProperty />} />
+        <Route path="/my-properties" element={<ComingSoon />} />
+        <Route path="/notifications" element={<ComingSoon />} />
+        <Route path="/profile" element={<ComingSoon />} />
+        <Route path="/verifications" element={<ComingSoon />} />
+        <Route path="/billing" element={<ComingSoon />} />
+        <Route path="/settings" element={<ComingSoon />} />
       </Routes>
     </BrowserRouter>
   );
