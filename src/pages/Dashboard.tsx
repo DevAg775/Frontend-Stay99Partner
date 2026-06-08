@@ -1,9 +1,9 @@
 import {
   Building2,
   CheckCircle2,
-  
   Clock,
   Plus,
+  ShieldCheck,
   Upload,
   XCircle,
 } from "lucide-react";
@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/ui/sidebar";
 import Header from "@/components/ui/header";
+
 interface Property {
   _id: string;
   propertyName: string;
@@ -29,7 +30,83 @@ interface Stats {
   rejected: number;
 }
 
-export default function Screen5() {
+interface ActivityItem {
+  type: "approved" | "documents_requested" | "submitted" | "rejected" | "verified";
+  title: string;
+  propertyName?: string;
+  description?: string;
+  time: string;
+}
+
+function getActivityItems(properties: Property[]): ActivityItem[] {
+  const items: ActivityItem[] = [];
+  properties.forEach((p) => {
+    if (p.verificationStatus === "approved") {
+      items.push({ type: "approved", title: "Property Approved", propertyName: p.propertyName, time: new Date(p.submissionDate).toLocaleDateString("en-IN") });
+    } else if (p.verificationStatus === "rejected") {
+      items.push({ type: "rejected", title: "Property Rejected", propertyName: p.propertyName, time: new Date(p.submissionDate).toLocaleDateString("en-IN") });
+    } else if (p.verificationStatus === "under_review") {
+      items.push({ type: "documents_requested", title: "Documents Requested", propertyName: p.propertyName, time: new Date(p.submissionDate).toLocaleDateString("en-IN") });
+    } else {
+      items.push({ type: "submitted", title: "Property Submitted", propertyName: p.propertyName, time: new Date(p.submissionDate).toLocaleDateString("en-IN") });
+    }
+  });
+  return items.slice(0, 5);
+}
+
+function ActivityIcon({ type }: { type: ActivityItem["type"] }) {
+  switch (type) {
+    case "approved":
+      return (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="size-2.5 rounded-full bg-green-500 shrink-0" />
+          <div className="size-7 rounded-full border-2 border-green-500 flex items-center justify-center">
+            <CheckCircle2 className="size-4 text-green-500" />
+          </div>
+        </div>
+      );
+    case "documents_requested":
+      return (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="size-2.5 rounded-full bg-amber-400 shrink-0" />
+          <div className="size-7 rounded-full border-2 border-amber-400 flex items-center justify-center">
+            <svg className="size-4 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
+            </svg>
+          </div>
+        </div>
+      );
+    case "submitted":
+      return (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="size-2.5 rounded-full bg-blue-500 shrink-0" />
+          <div className="size-7 rounded-full border-2 border-blue-500 flex items-center justify-center">
+            <Upload className="size-4 text-blue-500" />
+          </div>
+        </div>
+      );
+    case "rejected":
+      return (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="size-2.5 rounded-full bg-red-500 shrink-0" />
+          <div className="size-7 rounded-full border-2 border-red-400 flex items-center justify-center">
+            <XCircle className="size-4 text-red-500" />
+          </div>
+        </div>
+      );
+    case "verified":
+      return (
+        <div className="flex items-center gap-2 shrink-0">
+          <span className="size-2.5 rounded-full bg-neutral-400 shrink-0" />
+          <div className="size-7 rounded-full border-2 border-neutral-400 flex items-center justify-center">
+            <ShieldCheck className="size-4 text-neutral-500" />
+          </div>
+        </div>
+      );
+  }
+}
+
+export default function Dashboard() {
   const navigate = useNavigate();
   const [properties, setProperties] = useState<Property[]>([]);
   const [stats, setStats] = useState<Stats>({
@@ -65,7 +142,11 @@ export default function Screen5() {
       setStats({
         total: data.length,
         approved: data.filter((p: Property) => p.verificationStatus === "approved").length,
-        pending: data.filter((p: Property) => p.verificationStatus === "pending" || p.verificationStatus === "under_review").length,
+        pending: data.filter(
+          (p: Property) =>
+            p.verificationStatus === "pending" ||
+            p.verificationStatus === "under_review"
+        ).length,
         rejected: data.filter((p: Property) => p.verificationStatus === "rejected").length,
       });
     } catch (err) {
@@ -75,168 +156,256 @@ export default function Screen5() {
     }
   };
 
-
   const getStatusBadge = (status: string) => {
     switch (status) {
       case "approved":
-        return <Badge className="bg-[oklch(0.6_0.17_150/0.12)] text-[oklch(0.5_0.15_150)] border-0">Approved</Badge>;
+        return (
+          <Badge className="bg-green-50 text-green-700 border-green-100 hover:bg-green-50">
+            Approved
+          </Badge>
+        );
       case "pending":
       case "under_review":
-        return <Badge className="bg-[oklch(0.78_0.16_75/0.15)] text-[oklch(0.55_0.13_75)] border-0">Pending Review</Badge>;
+        return (
+          <Badge className="bg-amber-50 text-amber-700 border-amber-100 hover:bg-amber-50">
+            Pending Review
+          </Badge>
+        );
       case "rejected":
-        return <Badge className="bg-[oklch(0.577_0.245_27.325/0.12)] text-[#e7000b] border-0">Rejected</Badge>;
+        return (
+          <Badge className="bg-red-50 text-red-600 border-red-100 hover:bg-red-50">
+            Rejected
+          </Badge>
+        );
       default:
         return <Badge>{status}</Badge>;
     }
   };
 
+  const activityItems = getActivityItems(properties);
+
   return (
-    <div>
-      <div className="bg-white text-neutral-950 flex w-full h-fit min-h-screen overflow-visible">
-        <Sidebar />
-        <main className="bg-[oklch(0.98_0.005_250)] flex flex-col flex-1 overflow-hidden">
-          <Header title="Dashboard" />
+    <div className="bg-white text-neutral-950 flex w-full h-fit min-h-screen overflow-visible">
+      <Sidebar />
+      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+        <Header title="Dashboard" />
 
-          <div className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
-            {loading ? (
-              <div className="text-center text-neutral-500 py-12">Loading...</div>
-            ) : (
-              <>
-                <div className="grid grid-cols-4 gap-6">
-                  <Card className="border-l-[oklch(0.45_0.22_277)] shadow-sm border-l-4 p-6 gap-4">
-                    <CardHeader className="p-0 flex-row justify-between items-center gap-2">
-                      <span className="text-neutral-500 text-sm leading-5">Submitted Properties</span>
-                      <div className="size-9 bg-[oklch(0.45_0.22_277/0.1)] rounded-lg flex justify-center items-center">
-                        <Building2 className="size-5 text-[oklch(0.45_0.22_277)]" />
+        <div className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
+          {loading ? (
+            <div className="text-center text-neutral-500 py-12">Loading...</div>
+          ) : (
+            <>
+              {/* ── Stat Cards ── */}
+              <div className="grid grid-cols-4 gap-5">
+                {/* Submitted */}
+                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                  <CardHeader className="p-0 gap-0">
+                    <div className="flex justify-between items-start">
+                      <span className="text-neutral-500 text-sm leading-5">
+                        Submitted Properties
+                      </span>
+                      <div className="size-10 rounded-full bg-indigo-50 flex justify-center items-center">
+                        <Building2 className="size-5 text-indigo-500" />
                       </div>
-                    </CardHeader>
-                    <CardContent className="p-0 gap-1">
-                      <span className="font-bold text-3xl leading-9">{stats.total}</span>
-                      <p className="text-neutral-500 text-xs leading-4">Total submitted</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-l-[oklch(0.6_0.17_150)] shadow-sm border-l-4 p-6 gap-4">
-                    <CardHeader className="p-0 flex-row justify-between items-center gap-2">
-                      <span className="text-neutral-500 text-sm leading-5">Approved Properties</span>
-                      <div className="size-9 bg-[oklch(0.6_0.17_150/0.12)] rounded-lg flex justify-center items-center">
-                        <CheckCircle2 className="size-5 text-[oklch(0.6_0.17_150)]" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-0 gap-1">
-                      <span className="font-bold text-3xl leading-9">{stats.approved}</span>
-                      <p className="text-neutral-500 text-xs leading-4">
-                        {stats.total > 0 ? Math.round((stats.approved / stats.total) * 100) : 0}% approval rate
-                      </p>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-l-[oklch(0.78_0.16_75)] shadow-sm border-l-4 p-6 gap-4">
-                    <CardHeader className="p-0 flex-row justify-between items-center gap-2">
-                      <span className="text-neutral-500 text-sm leading-5">Pending Reviews</span>
-                      <div className="size-9 bg-[oklch(0.78_0.16_75/0.15)] rounded-lg flex justify-center items-center">
-                        <Clock className="size-5 text-[oklch(0.6_0.14_75)]" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-0 gap-1">
-                      <span className="font-bold text-3xl leading-9">{stats.pending}</span>
-                      <p className="text-neutral-500 text-xs leading-4">Awaiting admin review</p>
-                    </CardContent>
-                  </Card>
-                  <Card className="border-l-destructive shadow-sm border-l-4 p-6 gap-4">
-                    <CardHeader className="p-0 flex-row justify-between items-center gap-2">
-                      <span className="text-neutral-500 text-sm leading-5">Rejected Properties</span>
-                      <div className="size-9 bg-[oklch(0.577_0.245_27.325/0.12)] rounded-lg flex justify-center items-center">
-                        <XCircle className="size-5 text-[#e7000b]" />
-                      </div>
-                    </CardHeader>
-                    <CardContent className="p-0 gap-1">
-                      <span className="font-bold text-3xl leading-9">{stats.rejected}</span>
-                      <p className="text-neutral-500 text-xs leading-4">Requires resubmission</p>
-                    </CardContent>
-                  </Card>
-                </div>
-
-                <div className="flex justify-end">
-                  <Link to="/submit-property">
-                    <Button className="bg-[oklch(0.45_0.22_277)] text-neutral-50 gap-2">
-                      <Plus className="size-4" />
-                      Submit New Property
-                    </Button>
-                  </Link>
-                </div>
-
-                <Card className="shadow-sm p-6 gap-4">
-                  <CardHeader className="p-0 gap-2">
-                    <h2 className="font-bold text-base leading-6">Recent Activity</h2>
+                    </div>
                   </CardHeader>
-                  <CardContent className="p-0 gap-0">
-                    {properties.length === 0 ? (
-                      <p className="text-neutral-500 text-sm py-4 text-center">No activity yet. Submit your first property!</p>
-                    ) : (
-                      properties.slice(0, 5).map((p, i) => (
-                        <div key={p._id} className={`flex py-3 items-start gap-4 ${i > 0 ? "border-t border-neutral-200" : ""}`}>
-                          <Upload className="size-4 text-[oklch(0.55_0.18_255)] mt-0.5" />
-                          <div className="flex-1">
-                            <p className="font-semibold text-sm leading-5">Property Submitted</p>
-                            <p className="text-[oklch(0.45_0.22_277)] text-sm leading-5">{p.propertyName}</p>
+                  <CardContent className="p-0 gap-1">
+                    <span className="font-bold text-3xl leading-9">{stats.total}</span>
+                    <p className="text-neutral-500 text-xs leading-4 mt-1">+1 this month</p>
+                  </CardContent>
+                </Card>
+
+                {/* Approved */}
+                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                  <CardHeader className="p-0 gap-0">
+                    <div className="flex justify-between items-start">
+                      <span className="text-neutral-500 text-sm leading-5">
+                        Approved Properties
+                      </span>
+                      <div className="size-10 rounded-full bg-green-50 flex justify-center items-center">
+                        <CheckCircle2 className="size-5 text-green-500" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 gap-1">
+                    <span className="font-bold text-3xl leading-9">{stats.approved}</span>
+                    <p className="text-neutral-500 text-xs leading-4 mt-1">
+                      {stats.total > 0
+                        ? Math.round((stats.approved / stats.total) * 100)
+                        : 0}
+                      % approval rate
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Pending */}
+                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                  <CardHeader className="p-0 gap-0">
+                    <div className="flex justify-between items-start">
+                      <span className="text-neutral-500 text-sm leading-5">
+                        Pending Reviews
+                      </span>
+                      <div className="size-10 rounded-full bg-amber-50 flex justify-center items-center">
+                        <Clock className="size-5 text-amber-500" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 gap-1">
+                    <span className="font-bold text-3xl leading-9">{stats.pending}</span>
+                    <p className="text-neutral-500 text-xs leading-4 mt-1">
+                      Awaiting admin review
+                    </p>
+                  </CardContent>
+                </Card>
+
+                {/* Rejected */}
+                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                  <CardHeader className="p-0 gap-0">
+                    <div className="flex justify-between items-start">
+                      <span className="text-neutral-500 text-sm leading-5">
+                        Rejected Properties
+                      </span>
+                      <div className="size-10 rounded-full bg-red-50 flex justify-center items-center">
+                        <XCircle className="size-5 text-red-500" />
+                      </div>
+                    </div>
+                  </CardHeader>
+                  <CardContent className="p-0 gap-1">
+                    <span className="font-bold text-3xl leading-9">{stats.rejected}</span>
+                    <p className="text-neutral-500 text-xs leading-4 mt-1">
+                      Requires resubmission
+                    </p>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* ── Submit Button ── */}
+              <div className="flex justify-end">
+                <Link to="/submit-property">
+                  <Button className="bg-indigo-600 hover:bg-indigo-700 text-white gap-2 px-5 py-2.5 rounded-lg font-medium text-sm">
+                    <Plus className="size-4" />
+                    Submit New Property
+                  </Button>
+                </Link>
+              </div>
+
+              {/* ── Recent Activity ── */}
+              <Card className="shadow-sm border border-neutral-200 bg-white p-6">
+                <CardHeader className="p-0 pb-4">
+                  <h2 className="font-bold text-base leading-6">Recent Activity</h2>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {activityItems.length === 0 ? (
+                    <p className="text-neutral-500 text-sm py-4 text-center">
+                      No activity yet. Submit your first property!
+                    </p>
+                  ) : (
+                    <div className="flex flex-col">
+                      {activityItems.map((item, i) => (
+                        <div
+                          key={i}
+                          className={`flex py-4 items-center gap-4 ${
+                            i > 0 ? "border-t border-neutral-100" : ""
+                          }`}
+                        >
+                          <ActivityIcon type={item.type} />
+                          <div className="flex-1 min-w-0">
+                            <p className="font-semibold text-sm leading-5 text-neutral-900">
+                              {item.title}
+                            </p>
+                            {item.propertyName && (
+                              <p className="text-indigo-600 text-sm leading-5 truncate">
+                                {item.propertyName}
+                              </p>
+                            )}
+                            {item.description && (
+                              <p className="text-neutral-500 text-sm leading-5">
+                                {item.description}
+                              </p>
+                            )}
                           </div>
-                          <span className="text-neutral-500 text-xs leading-4">
-                            {new Date(p.submissionDate).toLocaleDateString("en-IN")}
+                          <span className="text-neutral-400 text-xs leading-4 shrink-0">
+                            {item.time}
                           </span>
                         </div>
-                      ))
-                    )}
-                  </CardContent>
-                </Card>
+                      ))}
+                    </div>
+                  )}
+                </CardContent>
+              </Card>
 
-                <Card className="shadow-sm p-6 gap-4">
-                  <CardHeader className="p-0 flex-row justify-between items-center gap-2">
-                    <h2 className="font-bold text-base leading-6">My Properties</h2>
-                  </CardHeader>
-                  <CardContent className="p-0 gap-0">
-                    {properties.length === 0 ? (
-                      <p className="text-neutral-500 text-sm py-4 text-center">
-                        No properties submitted yet.{" "}
-                        <Link to="/submit-property" className="text-[oklch(0.45_0.22_277)] underline">
-                          Submit your first property
-                        </Link>
-                      </p>
-                    ) : (
-                      <table className="text-sm leading-5 w-full">
-                        <thead>
-                          <tr className="text-left text-neutral-500 border-b border-neutral-200">
-                            <th className="font-medium pb-2">Property Name</th>
-                            <th className="font-medium pb-2">Type</th>
-                            <th className="font-medium pb-2">Status</th>
-                            <th className="font-medium pb-2">Submitted Date</th>
-                            <th className="font-medium text-right pb-2">Action</th>
+              {/* ── My Properties Table ── */}
+              <Card className="shadow-sm border border-neutral-200 bg-white p-6">
+                <CardHeader className="p-0 pb-4 flex-row justify-between items-center">
+                  <h2 className="font-bold text-base leading-6">My Properties</h2>
+                  <Link
+                    to="/my-properties"
+                    className="text-indigo-600 text-sm font-medium flex items-center gap-1 hover:underline"
+                  >
+                    View All
+                    <svg className="size-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" d="M9 5l7 7-7 7" />
+                    </svg>
+                  </Link>
+                </CardHeader>
+                <CardContent className="p-0">
+                  {properties.length === 0 ? (
+                    <p className="text-neutral-500 text-sm py-4 text-center">
+                      No properties submitted yet.{" "}
+                      <Link
+                        to="/submit-property"
+                        className="text-indigo-600 underline"
+                      >
+                        Submit your first property
+                      </Link>
+                    </p>
+                  ) : (
+                    <table className="text-sm leading-5 w-full">
+                      <thead>
+                        <tr className="text-left text-neutral-500 border-b border-neutral-200">
+                          <th className="font-medium pb-3">Property Name</th>
+                          <th className="font-medium pb-3">Type</th>
+                          <th className="font-medium pb-3">Status</th>
+                          <th className="font-medium pb-3">Submitted Date</th>
+                          <th className="font-medium text-right pb-3">Action</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {properties.map((p) => (
+                          <tr
+                            key={p._id}
+                            className="border-b border-neutral-100 last:border-0"
+                          >
+                            <td className="font-medium py-3 text-neutral-900">
+                              {p.propertyName}
+                            </td>
+                            <td className="text-neutral-500 py-3">{p.propertyType}</td>
+                            <td className="py-3">
+                              {getStatusBadge(p.verificationStatus)}
+                            </td>
+                            <td className="text-neutral-500 py-3">
+                              {new Date(p.submissionDate).toLocaleDateString("en-IN")}
+                            </td>
+                            <td className="text-right py-3">
+                              <Button
+                                variant="ghost"
+                                size="sm"
+                                className="text-indigo-600 hover:text-indigo-700 hover:bg-indigo-50"
+                              >
+                                View
+                              </Button>
+                            </td>
                           </tr>
-                        </thead>
-                        <tbody>
-                          {properties.map((p) => (
-                            <tr key={p._id} className="border-b border-neutral-200 last:border-0">
-                              <td className="font-medium py-3">{p.propertyName}</td>
-                              <td className="text-neutral-500 py-3">{p.propertyType}</td>
-                              <td className="py-3">{getStatusBadge(p.verificationStatus)}</td>
-                              <td className="text-neutral-500 py-3">
-                                {new Date(p.submissionDate).toLocaleDateString("en-IN")}
-                              </td>
-                              <td className="text-right py-3">
-                                <Button variant="ghost" size="sm" className="text-[oklch(0.45_0.22_277)]">
-                                  View
-                                </Button>
-                              </td>
-                            </tr>
-                          ))}
-                        </tbody>
-                      </table>
-                    )}
-                  </CardContent>
-                </Card>
-              </>
-            )}
-          </div>
-        </main>
-      </div>
+                        ))}
+                      </tbody>
+                    </table>
+                  )}
+                </CardContent>
+              </Card>
+            </>
+          )}
+        </div>
+      </main>
     </div>
   );
 }
