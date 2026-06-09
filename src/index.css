@@ -6,12 +6,12 @@
 
 @custom-variant dark (&:is(.dark *));
 
-/* limit the size of max height elements */
+/* full-viewport sizing (overrides the 956px design-export cap) */
 .h-screen {
-  height: 956px !important;
+  height: 100vh;
 }
 .min-h-screen {
-  min-height: 956px !important;
+  min-height: 100vh;
 }
 
 * {

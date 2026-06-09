@@ -90,9 +90,9 @@ export default function Register() {
 
   return (
     <div>
-      <div className="bg-white text-neutral-950 w-full h-fit min-h-screen overflow-visible">
-        <div className="flex w-full h-239 overflow-hidden">
-          <div className="relative w-1/2 bg-[linear-gradient(155deg,#4F46E5_0%,#312E81_55%,#1E1B4B_100%)] text-white flex p-12 flex-col justify-between">
+      <div className="bg-white text-neutral-950 w-full min-h-screen">
+        <div className="flex w-full min-h-screen">
+          <div className="relative w-1/2 max-lg:hidden bg-[linear-gradient(155deg,#4F46E5_0%,#312E81_55%,#1E1B4B_100%)] text-white flex p-12 flex-col justify-between">
             <div className="flex items-center gap-2">
               <div className="size-9 backdrop-blur-sm rounded-xl bg-white/15 flex justify-center items-center">
                 <ShieldCheck className="size-5 text-white" />
@@ -170,7 +170,7 @@ export default function Register() {
             </Card>
           </div>
 
-          <div className="w-1/2 bg-white flex p-12 justify-center items-center">
+          <div className="w-1/2 max-lg:w-full bg-white flex p-12 justify-center items-center">
             <div className="max-w-md flex flex-col gap-6 w-full">
               <div className="flex items-center gap-2">
                 <ShieldCheck className="size-5 text-neutral-900" />

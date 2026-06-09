@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Link } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
 import {
   ArrowRight,
   BadgeCheck,
@@ -31,6 +31,21 @@ import Register from "./pages/Register";
 import ForgotPassword from "./pages/ForgotPassword";
 import Dashboard from "./pages/Dashboard";
 import SubmitProperty from "./pages/SubmitProperty";
+
+import AdminLogin from "./pages/admin/AdminLogin";
+import AdminDashboard from "./pages/admin/AdminDashboard";
+import AdminProperties from "./pages/admin/AdminProperties";
+import AdminPropertyReview from "./pages/admin/AdminPropertyReview";
+import AdminExport from "./pages/admin/AdminExport";
+
+function RequireAdmin({ children }: { children: React.ReactNode }) {
+  const user = JSON.parse(localStorage.getItem("user") || "{}");
+  const token = localStorage.getItem("token");
+  if (!token || user.role !== "admin") {
+    return <Navigate to="/admin/login" replace />;
+  }
+  return <>{children}</>;
+}
 
 function Home() {
   return (
@@ -480,6 +495,16 @@ export default function App() {
         <Route path="/verifications" element={<ComingSoon />} />
         <Route path="/billing" element={<ComingSoon />} />
         <Route path="/settings" element={<ComingSoon />} />
+
+        {/* Admin Portal */}
+        <Route path="/admin/login" element={<AdminLogin />} />
+        <Route path="/admin/dashboard" element={<RequireAdmin><AdminDashboard /></RequireAdmin>} />
+        <Route path="/admin/properties" element={<RequireAdmin><AdminProperties /></RequireAdmin>} />
+        <Route path="/admin/properties/:id" element={<RequireAdmin><AdminPropertyReview /></RequireAdmin>} />
+        <Route path="/admin/export" element={<RequireAdmin><AdminExport /></RequireAdmin>} />
+        <Route path="/admin/users" element={<RequireAdmin><ComingSoon /></RequireAdmin>} />
+        <Route path="/admin/settings" element={<RequireAdmin><ComingSoon /></RequireAdmin>} />
+        <Route path="/admin" element={<Navigate to="/admin/login" replace />} />
       </Routes>
     </BrowserRouter>
   );

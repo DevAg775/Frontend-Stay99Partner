@@ -1,6 +1,7 @@
 import {
   ArrowLeft,
   ArrowRight,
+  Check,
   CheckCircle2,
   FileCheck2,
   Mail,
@@ -31,7 +32,6 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import { Checkbox } from "@/components/ui/checkbox";
 import { Textarea } from "@/components/ui/textarea";
 import Sidebar from "@/components/ui/sidebar";
 import Header from "@/components/ui/header";
@@ -117,6 +117,20 @@ const INDIAN_STATES = [
   "Tripura", "Uttar Pradesh", "Uttarakhand", "West Bengal", "Delhi", "Jammu & Kashmir",
   "Ladakh", "Puducherry", "Chandigarh",
 ];
+
+const AMENITY_LABELS: Record<string, string> = {
+  wifi: "Free WiFi",
+  parking: "Parking",
+  restaurant: "Restaurant",
+  airConditioning: "Air Conditioning",
+  roomService: "Room Service",
+  swimmingPool: "Swimming Pool",
+  gym: "Gym/Fitness",
+  conferenceHall: "Conference Room",
+  spa: "Spa",
+  airportPickup: "Airport Pickup",
+  petFriendly: "Pet Friendly",
+};
 
 // ─── Main Component ───────────────────────────────────────────────────────────
 
@@ -614,15 +628,26 @@ export default function SubmitProperty() {
             </div>
             <div className="flex flex-col gap-4">
               <SectionHeader title="Amenities" />
-              <div className="grid grid-cols-3 gap-4">
-                {(Object.keys(form.amenities) as (keyof typeof form.amenities)[]).map((key) => (
-                  <label key={key} className="flex items-center gap-2 cursor-pointer">
-                    <Checkbox checked={form.amenities[key]} onCheckedChange={() => updateAmenity(key)} />
-                    <span className="text-sm text-neutral-700 capitalize">
-                      {key.replace(/([A-Z])/g, " $1").trim()}
-                    </span>
-                  </label>
-                ))}
+              <p className="text-neutral-500 text-sm -mt-2">Select all amenities available at your property</p>
+              <div className="grid grid-cols-4 gap-3 max-lg:grid-cols-3 max-md:grid-cols-2">
+                {(Object.keys(form.amenities) as (keyof typeof form.amenities)[]).map((key) => {
+                  const active = form.amenities[key];
+                  return (
+                    <button
+                      type="button"
+                      key={key}
+                      onClick={() => updateAmenity(key)}
+                      className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
+                        active
+                          ? "border-indigo-300 bg-indigo-50 text-indigo-700 font-medium"
+                          : "border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50"
+                      }`}
+                    >
+                      <span className="capitalize">{AMENITY_LABELS[key]}</span>
+                      {active && <Check className="size-4 shrink-0 text-indigo-600" />}
+                    </button>
+                  );
+                })}
               </div>
             </div>
           </div>
@@ -778,22 +803,22 @@ export default function SubmitProperty() {
   // ─── Render ─────────────────────────────────────────────────────────────────
 
   return (
-    <div className="bg-white text-neutral-950 w-full h-fit min-h-screen overflow-visible">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 w-full h-fit min-h-screen overflow-visible">
       <div className="flex w-full min-h-screen overflow-hidden">
         {/* Sidebar */}
         <Sidebar />
 
         {/* Main */}
-        <div className="bg-neutral-100 flex flex-col flex-1">
+        <div className="bg-neutral-100 dark:bg-neutral-950 flex flex-col flex-1">
           <Header title="Submit New Property" />
 
           <main className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
             {/* Progress Card */}
             {currentStep <= 7 && (
-              <Card className="bg-white p-6 gap-4">
+              <Card className="bg-white dark:bg-neutral-900 dark:border-neutral-800 p-6 gap-4">
                 <CardHeader className="p-0 gap-1">
                   <div className="flex justify-between items-center">
-                    <CardTitle className="font-semibold text-neutral-950 text-base leading-6">
+                    <CardTitle className="font-semibold text-neutral-950 dark:text-neutral-100 text-base leading-6">
                       Onboarding Progress
                     </CardTitle>
                     <span className="font-medium text-neutral-500 text-xs leading-4">
@@ -803,20 +828,24 @@ export default function SubmitProperty() {
                 </CardHeader>
                 <CardContent className="flex p-0 flex-col gap-2">
                   <div className="w-full bg-neutral-200 rounded-full h-1.5 mb-4">
-                    <div className="bg-neutral-900 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
+                    <div className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
                   </div>
                   <div className="relative flex justify-between items-start">
                     <div className="bg-neutral-200 absolute inset-x-0 top-5 h-0.5" />
+                    <div
+                      className="bg-neutral-900 absolute left-0 top-5 h-0.5 transition-all duration-300"
+                      style={{ width: `${((currentStep - 1) / (STEPS.length - 1)) * 100}%` }}
+                    />
                     {STEPS.map((step, i) => (
                       <div key={i} className="relative flex flex-col items-center flex-1 gap-2">
                         <div className={`size-10 z-10 font-bold rounded-full text-sm leading-5 flex justify-center items-center transition-all
-                          ${i + 1 < currentStep ? "bg-green-600 text-white" :
-                            i + 1 === currentStep ? "bg-neutral-900 text-white ring-4 ring-neutral-900/15" :
-                              "bg-white text-neutral-500 border-2 border-neutral-200"}`}>
+                          ${i + 1 < currentStep ? "bg-neutral-900 text-white" :
+                            i + 1 === currentStep ? "bg-indigo-600 text-white ring-4 ring-indigo-600/15" :
+                              "bg-white dark:bg-neutral-800 text-neutral-500 dark:text-neutral-400 border-2 border-neutral-200 dark:border-neutral-700"}`}>
                           {i + 1 < currentStep ? <CheckCircle2 className="size-5" /> : i + 1}
                         </div>
                         <span className={`font-medium text-center text-xs leading-4 px-1
-                          ${i + 1 === currentStep ? "font-semibold text-neutral-950" : "text-neutral-500"}`}>
+                          ${i + 1 === currentStep ? "font-semibold text-neutral-950 dark:text-neutral-100" : "text-neutral-500 dark:text-neutral-400"}`}>
                           {step}
                         </span>
                       </div>
@@ -827,15 +856,15 @@ export default function SubmitProperty() {
             )}
 
             {/* Step Card */}
-            <Card className="bg-white p-8 flex-1 gap-6">
+            <Card className="bg-white dark:bg-neutral-900 dark:border-neutral-800 p-8 flex-1 gap-6">
               {currentStep <= 7 && (
                 <CardHeader className="p-0 gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-lg bg-neutral-900/10 flex justify-center items-center">
-                      <UserRound className="size-5 text-neutral-900" />
+                    <div className="size-10 rounded-lg bg-indigo-50 flex justify-center items-center">
+                      <UserRound className="size-5 text-indigo-600" />
                     </div>
                     <div className="flex flex-col">
-                      <CardTitle className="font-bold text-neutral-950 text-xl leading-7">
+                      <CardTitle className="font-bold text-neutral-950 dark:text-neutral-100 text-xl leading-7">
                         {currentStep === 1 && "Owner Information"}
                         {currentStep === 2 && "Business Information"}
                         {currentStep === 3 && "Property Information"}
@@ -868,11 +897,11 @@ export default function SubmitProperty() {
 
               {/* Footer Navigation */}
               {currentStep <= 7 && (
-                <CardFooter className="border-t border-neutral-200 flex mt-auto px-0 pt-6 pb-0 justify-between items-center">
+                <CardFooter className="border-t border-neutral-200 dark:border-neutral-800 flex mt-auto px-0 pt-6 pb-0 justify-between items-center">
                   <div className="flex flex-col gap-1">
                     {currentStep <= 7 && (
                       <>
-                        <span className="font-medium text-neutral-950 text-sm leading-5">
+                        <span className="font-medium text-neutral-950 dark:text-neutral-100 text-sm leading-5">
                           Step {currentStep} of 7
                         </span>
                         <span className="text-neutral-500 text-xs leading-4 flex items-center gap-1">
@@ -889,7 +918,7 @@ export default function SubmitProperty() {
                     )}
                     {
                       currentStep < 7 && (
-                        <Button className="rounded-lg bg-neutral-900 text-neutral-50" onClick={() => {
+                        <Button className="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white" onClick={() => {
                           if (validateStep(currentStep)) setCurrentStep((s) => s + 1);
                         }}>
                           Next: {STEPS[currentStep]}
@@ -899,7 +928,7 @@ export default function SubmitProperty() {
                     }
                     {currentStep === 7 && (
                       <Button
-                        className="rounded-lg bg-neutral-900 text-neutral-50"
+                        className="rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white"
                         onClick={handleSubmit}
                         disabled={loading}
                       >
@@ -923,8 +952,8 @@ export default function SubmitProperty() {
 function SectionHeader({ title }: { title: string }) {
   return (
     <div className="flex items-center gap-2">
-      <span className="font-bold uppercase text-neutral-500 text-xs leading-4 tracking-wide">{title}</span>
-      <div className="bg-neutral-200 flex-1 h-px" />
+      <span className="font-bold uppercase text-neutral-500 dark:text-neutral-400 text-xs leading-4 tracking-wide">{title}</span>
+      <div className="bg-neutral-200 dark:bg-neutral-800 flex-1 h-px" />
     </div>
   );
 }
@@ -934,7 +963,7 @@ function FormField({ label, children, className, required }: {
 }) {
   return (
     <div className={`flex flex-col gap-2 ${className || ""}`}>
-      <Label className="font-medium text-neutral-950 text-sm leading-5">
+      <Label className="font-medium text-neutral-950 dark:text-neutral-200 text-sm leading-5">
         {label} {required && <span className="text-red-500">*</span>}
       </Label>
       {children}
@@ -945,7 +974,7 @@ function FormField({ label, children, className, required }: {
 function ReviewSection({ title, children }: { title: string; children: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-3">
-      <h3 className="font-semibold text-neutral-950 text-sm border-b border-neutral-200 pb-2">{title}</h3>
+      <h3 className="font-semibold text-neutral-950 dark:text-neutral-100 text-sm border-b border-neutral-200 dark:border-neutral-800 pb-2">{title}</h3>
       <div className="grid grid-cols-2 gap-2">{children}</div>
     </div>
   );
@@ -954,8 +983,8 @@ function ReviewSection({ title, children }: { title: string; children: React.Rea
 function ReviewRow({ label, value }: { label: string; value: string }) {
   return (
     <>
-      <span className="text-neutral-500 text-sm">{label}</span>
-      <span className="text-neutral-950 text-sm font-medium">{value || "—"}</span>
+      <span className="text-neutral-500 dark:text-neutral-400 text-sm">{label}</span>
+      <span className="text-neutral-950 dark:text-neutral-100 text-sm font-medium">{value || "—"}</span>
     </>
   );
 }

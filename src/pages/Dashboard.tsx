@@ -185,9 +185,9 @@ export default function Dashboard() {
   const activityItems = getActivityItems(properties);
 
   return (
-    <div className="bg-white text-neutral-950 flex w-full h-fit min-h-screen overflow-visible">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 flex w-full h-fit min-h-screen overflow-visible">
       <Sidebar />
-      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+      <main className="bg-neutral-50 dark:bg-neutral-950 flex flex-col flex-1 overflow-hidden">
         <Header title="Dashboard" />
 
         <div className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
@@ -198,7 +198,7 @@ export default function Dashboard() {
               {/* ── Stat Cards ── */}
               <div className="grid grid-cols-4 gap-5">
                 {/* Submitted */}
-                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 gap-3 bg-white dark:bg-neutral-900">
                   <CardHeader className="p-0 gap-0">
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-500 text-sm leading-5">
@@ -210,13 +210,13 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 gap-1">
-                    <span className="font-bold text-3xl leading-9">{stats.total}</span>
+                    <span className="font-bold text-3xl leading-9 dark:text-neutral-100">{stats.total}</span>
                     <p className="text-neutral-500 text-xs leading-4 mt-1">+1 this month</p>
                   </CardContent>
                 </Card>
 
                 {/* Approved */}
-                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 gap-3 bg-white dark:bg-neutral-900">
                   <CardHeader className="p-0 gap-0">
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-500 text-sm leading-5">
@@ -228,7 +228,7 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 gap-1">
-                    <span className="font-bold text-3xl leading-9">{stats.approved}</span>
+                    <span className="font-bold text-3xl leading-9 dark:text-neutral-100">{stats.approved}</span>
                     <p className="text-neutral-500 text-xs leading-4 mt-1">
                       {stats.total > 0
                         ? Math.round((stats.approved / stats.total) * 100)
@@ -239,7 +239,7 @@ export default function Dashboard() {
                 </Card>
 
                 {/* Pending */}
-                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 gap-3 bg-white dark:bg-neutral-900">
                   <CardHeader className="p-0 gap-0">
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-500 text-sm leading-5">
@@ -251,7 +251,7 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 gap-1">
-                    <span className="font-bold text-3xl leading-9">{stats.pending}</span>
+                    <span className="font-bold text-3xl leading-9 dark:text-neutral-100">{stats.pending}</span>
                     <p className="text-neutral-500 text-xs leading-4 mt-1">
                       Awaiting admin review
                     </p>
@@ -259,7 +259,7 @@ export default function Dashboard() {
                 </Card>
 
                 {/* Rejected */}
-                <Card className="shadow-sm border border-neutral-200 p-6 gap-3 bg-white">
+                <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 p-6 gap-3 bg-white dark:bg-neutral-900">
                   <CardHeader className="p-0 gap-0">
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-500 text-sm leading-5">
@@ -271,7 +271,7 @@ export default function Dashboard() {
                     </div>
                   </CardHeader>
                   <CardContent className="p-0 gap-1">
-                    <span className="font-bold text-3xl leading-9">{stats.rejected}</span>
+                    <span className="font-bold text-3xl leading-9 dark:text-neutral-100">{stats.rejected}</span>
                     <p className="text-neutral-500 text-xs leading-4 mt-1">
                       Requires resubmission
                     </p>
@@ -290,9 +290,9 @@ export default function Dashboard() {
               </div>
 
               {/* ── Recent Activity ── */}
-              <Card className="shadow-sm border border-neutral-200 bg-white p-6">
+              <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6">
                 <CardHeader className="p-0 pb-4">
-                  <h2 className="font-bold text-base leading-6">Recent Activity</h2>
+                  <h2 className="font-bold text-base leading-6 dark:text-neutral-100">Recent Activity</h2>
                 </CardHeader>
                 <CardContent className="p-0">
                   {activityItems.length === 0 ? (
@@ -305,12 +305,12 @@ export default function Dashboard() {
                         <div
                           key={i}
                           className={`flex py-4 items-center gap-4 ${
-                            i > 0 ? "border-t border-neutral-100" : ""
+                            i > 0 ? "border-t border-neutral-100 dark:border-neutral-800" : ""
                           }`}
                         >
                           <ActivityIcon type={item.type} />
                           <div className="flex-1 min-w-0">
-                            <p className="font-semibold text-sm leading-5 text-neutral-900">
+                            <p className="font-semibold text-sm leading-5 text-neutral-900 dark:text-neutral-100">
                               {item.title}
                             </p>
                             {item.propertyName && (
@@ -335,9 +335,9 @@ export default function Dashboard() {
               </Card>
 
               {/* ── My Properties Table ── */}
-              <Card className="shadow-sm border border-neutral-200 bg-white p-6">
+              <Card className="shadow-sm border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 p-6">
                 <CardHeader className="p-0 pb-4 flex-row justify-between items-center">
-                  <h2 className="font-bold text-base leading-6">My Properties</h2>
+                  <h2 className="font-bold text-base leading-6 dark:text-neutral-100">My Properties</h2>
                   <Link
                     to="/my-properties"
                     className="text-indigo-600 text-sm font-medium flex items-center gap-1 hover:underline"
@@ -362,7 +362,7 @@ export default function Dashboard() {
                   ) : (
                     <table className="text-sm leading-5 w-full">
                       <thead>
-                        <tr className="text-left text-neutral-500 border-b border-neutral-200">
+                        <tr className="text-left text-neutral-500 border-b border-neutral-200 dark:border-neutral-800">
                           <th className="font-medium pb-3">Property Name</th>
                           <th className="font-medium pb-3">Type</th>
                           <th className="font-medium pb-3">Status</th>
@@ -374,9 +374,9 @@ export default function Dashboard() {
                         {properties.map((p) => (
                           <tr
                             key={p._id}
-                            className="border-b border-neutral-100 last:border-0"
+                            className="border-b border-neutral-100 dark:border-neutral-800 last:border-0"
                           >
-                            <td className="font-medium py-3 text-neutral-900">
+                            <td className="font-medium py-3 text-neutral-900 dark:text-neutral-100">
                               {p.propertyName}
                             </td>
                             <td className="text-neutral-500 py-3">{p.propertyType}</td>

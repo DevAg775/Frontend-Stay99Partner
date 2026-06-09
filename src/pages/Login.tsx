@@ -53,9 +53,9 @@ export default function Screen2() {
 
   return (
     <div>
-      <div className="bg-white text-neutral-950 w-full h-fit min-h-screen overflow-visible">
-        <div className="flex w-285 h-239 overflow-hidden">
-          <div className="relative w-[55%] bg-[linear-gradient(145deg,#4F46E5_0%,#312E81_55%,#1E1B4B_100%)] text-white flex p-12 flex-col justify-between">
+      <div className="bg-white text-neutral-950 w-full min-h-screen">
+        <div className="flex w-full min-h-screen">
+          <div className="relative w-[55%] max-lg:hidden bg-[linear-gradient(145deg,#4F46E5_0%,#312E81_55%,#1E1B4B_100%)] text-white flex p-12 flex-col justify-between">
             <div className="flex items-center gap-2">
               <div className="size-9 rounded-lg bg-white/15 flex justify-center items-center">
                 <Building2 className="size-5 text-white" />
@@ -122,7 +122,7 @@ export default function Screen2() {
             </div>
           </div>
 
-          <div className="w-[45%] bg-white flex p-12 justify-center items-center">
+          <div className="w-[45%] max-lg:w-full bg-white flex p-12 justify-center items-center">
             <div className="max-w-sm flex flex-col gap-8 w-full">
               <div className="flex flex-col gap-1">
                 <div className="flex items-center gap-1.5">
