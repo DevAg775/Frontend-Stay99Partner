@@ -115,16 +115,16 @@ export default function AdminProperties() {
   const to = Math.min(page * LIMIT, total);
 
   return (
-    <div className="bg-white text-neutral-950 flex w-full min-h-screen">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 flex w-full min-h-screen">
       <AdminSidebar />
-      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+      <main className="bg-neutral-50 dark:bg-neutral-950 flex flex-col flex-1 overflow-hidden">
         <AdminHeader title="Properties" />
 
         <div className="flex p-8 flex-col flex-1 gap-5 overflow-auto">
           {/* Heading */}
           <div className="flex justify-between items-center">
             <div className="flex items-baseline gap-3">
-              <h2 className="font-bold text-2xl text-neutral-900">All Properties</h2>
+              <h2 className="font-bold text-2xl text-neutral-900 dark:text-neutral-100">All Properties</h2>
               <span className="text-neutral-500 text-sm">{total} total</span>
             </div>
             <Link to="/admin/export">
@@ -136,12 +136,12 @@ export default function AdminProperties() {
           </div>
 
           {/* Filters */}
-          <Card className="border border-neutral-200 shadow-sm bg-white p-4 gap-4">
+          <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-4 gap-4">
             <div className="flex items-center gap-3 flex-wrap">
-              <div className="rounded-lg bg-neutral-50 border border-neutral-200 flex px-3 py-2 items-center gap-2 flex-1 min-w-60">
+              <div className="rounded-lg bg-neutral-50 dark:bg-neutral-800 border border-neutral-200 dark:border-neutral-700 flex px-3 py-2 items-center gap-2 flex-1 min-w-60">
                 <Search className="size-4 text-neutral-400" />
                 <input
-                  className="bg-transparent outline-none text-sm w-full text-neutral-700 placeholder:text-neutral-400"
+                  className="bg-transparent outline-none text-sm w-full text-neutral-700 dark:text-neutral-200 placeholder:text-neutral-400"
                   placeholder="Search by property name or owner..."
                   value={search}
                   onChange={(e) => setSearch(e.target.value)}
@@ -155,13 +155,13 @@ export default function AdminProperties() {
                     className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                       status === f.key
                         ? f.active
-                        : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+                        : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700"
                     }`}
                   >
                     {f.label}
                   </button>
                 ))}
-                <button className="rounded-lg border border-neutral-200 px-3 py-1.5 text-xs font-medium text-neutral-600 flex items-center gap-1.5 hover:bg-neutral-50">
+                <button className="rounded-lg border border-neutral-200 dark:border-neutral-700 px-3 py-1.5 text-xs font-medium text-neutral-600 dark:text-neutral-300 flex items-center gap-1.5 hover:bg-neutral-50 dark:hover:bg-neutral-700">
                   <SlidersHorizontal className="size-3.5" />
                   Filter
                 </button>
@@ -170,7 +170,7 @@ export default function AdminProperties() {
           </Card>
 
           {/* Table */}
-          <Card className="border border-neutral-200 shadow-sm bg-white p-0 overflow-hidden">
+          <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-0 overflow-hidden">
             {loading ? (
               <div className="text-center text-neutral-500 py-12">Loading...</div>
             ) : visible.length === 0 ? (
@@ -178,7 +178,7 @@ export default function AdminProperties() {
             ) : (
               <table className="text-sm w-full">
                 <thead>
-                  <tr className="text-left text-neutral-400 border-b border-neutral-200 text-xs uppercase tracking-wide bg-neutral-50">
+                  <tr className="text-left text-neutral-400 border-b border-neutral-200 dark:border-neutral-800 text-xs uppercase tracking-wide bg-neutral-50 dark:bg-neutral-800/50">
                     <th className="font-medium px-6 py-3">App ID</th>
                     <th className="font-medium px-6 py-3">Property Name</th>
                     <th className="font-medium px-6 py-3">Owner</th>
@@ -191,9 +191,9 @@ export default function AdminProperties() {
                 </thead>
                 <tbody>
                   {visible.map((p) => (
-                    <tr key={p._id} className="border-b border-neutral-100 last:border-0 hover:bg-neutral-50/50">
-                      <td className="px-6 py-3 text-indigo-600 font-mono text-xs font-medium">{p.applicationId}</td>
-                      <td className="px-6 py-3 font-medium text-neutral-900">{p.propertyName}</td>
+                    <tr key={p._id} className="border-b border-neutral-100 dark:border-neutral-800 last:border-0 hover:bg-neutral-50/50 dark:hover:bg-neutral-800/40">
+                      <td className="px-6 py-3 text-indigo-600 dark:text-indigo-400 font-mono text-xs font-medium">{p.applicationId}</td>
+                      <td className="px-6 py-3 font-medium text-neutral-900 dark:text-neutral-100">{p.propertyName}</td>
                       <td className="px-6 py-3 text-neutral-600">{p.ownerFullName}</td>
                       <td className="px-6 py-3 text-neutral-600">{p.propertyType}</td>
                       <td className="px-6 py-3 text-neutral-600">{p.city}</td>
@@ -231,7 +231,7 @@ export default function AdminProperties() {
             )}
 
             {/* Pagination */}
-            <div className="flex justify-between items-center px-6 py-4 border-t border-neutral-200">
+            <div className="flex justify-between items-center px-6 py-4 border-t border-neutral-200 dark:border-neutral-800">
               <span className="text-neutral-500 text-sm">
                 Showing {from}-{to} of {total} results
               </span>
@@ -239,7 +239,7 @@ export default function AdminProperties() {
                 <button
                   disabled={page <= 1}
                   onClick={() => setPage((p) => Math.max(1, p - 1))}
-                  className="flex items-center gap-1 rounded-md border border-neutral-200 px-2.5 py-1.5 text-sm text-neutral-600 disabled:opacity-40 hover:bg-neutral-50"
+                  className="flex items-center gap-1 rounded-md border border-neutral-200 dark:border-neutral-700 px-2.5 py-1.5 text-sm text-neutral-600 dark:text-neutral-300 disabled:opacity-40 hover:bg-neutral-50 dark:hover:bg-neutral-800"
                 >
                   <ChevronLeft className="size-4" /> Previous
                 </button>
@@ -250,7 +250,7 @@ export default function AdminProperties() {
                 <button
                   disabled={page >= totalPages}
                   onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-                  className="flex items-center gap-1 rounded-md border border-neutral-200 px-2.5 py-1.5 text-sm text-neutral-600 disabled:opacity-40 hover:bg-neutral-50"
+                  className="flex items-center gap-1 rounded-md border border-neutral-200 dark:border-neutral-700 px-2.5 py-1.5 text-sm text-neutral-600 dark:text-neutral-300 disabled:opacity-40 hover:bg-neutral-50 dark:hover:bg-neutral-800"
                 >
                   Next <ChevronRight className="size-4" />
                 </button>

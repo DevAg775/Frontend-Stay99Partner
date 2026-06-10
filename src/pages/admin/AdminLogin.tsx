@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import {
   AlertTriangle,
   Clock,
@@ -21,6 +21,14 @@ export default function AdminLogin() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Already signed in as admin? Skip the login page.
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (!token) return;
+    const user = JSON.parse(localStorage.getItem("user") || "{}");
+    if (user.role === "admin") navigate("/admin/dashboard", { replace: true });
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

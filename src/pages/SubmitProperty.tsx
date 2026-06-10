@@ -3,11 +3,15 @@ import {
   ArrowRight,
   Check,
   CheckCircle2,
+  ExternalLink,
   FileCheck2,
+  FileText,
+  IdCard,
   Mail,
   MapPin,
   Phone,
   Save,
+  ShieldCheck,
   Upload,
   User,
   UserRound,
@@ -256,6 +260,18 @@ export default function SubmitProperty() {
           return false;
         }
         return true;
+      case 6: {
+        const missing: string[] = [];
+        if (!files.panCard) missing.push("PAN Card");
+        if (!files.gstCertificate) missing.push("GST Certificate");
+        if (!files.businessRegistrationCertificate) missing.push("Business Registration Certificate");
+        if (!files.propertyOwnershipProof) missing.push("Ownership Proof");
+        if (missing.length) {
+          setError(`Please upload the required document(s): ${missing.join(", ")}.`);
+          return false;
+        }
+        return true;
+      }
       default:
         return true;
     }
@@ -311,7 +327,7 @@ export default function SubmitProperty() {
 
   // ─── Progress ───────────────────────────────────────────────────────────────
 
-  const progress = Math.round(((currentStep - 1) / 7) * 100);
+  const progress = Math.round((currentStep / STEPS.length) * 100);
 
   // ─── File Upload Box ────────────────────────────────────────────────────────
 
@@ -333,14 +349,14 @@ export default function SubmitProperty() {
     const ref = useRef<HTMLInputElement>(null);
     return (
       <div className="flex flex-col gap-2">
-        <Label className="font-medium text-neutral-950 text-sm leading-5">
+        <Label className="font-medium text-neutral-950 dark:text-neutral-200 text-sm leading-5">
           {label} {required && <span className="text-red-500">*</span>}
         </Label>
         {file ? (
-          <div className="rounded-lg border border-neutral-200 flex px-4 py-3 justify-between items-center">
+          <div className="rounded-lg border border-neutral-200 dark:border-neutral-700 flex px-4 py-3 justify-between items-center">
             <div className="flex items-center gap-2">
               <FileCheck2 className="size-4 text-green-600" />
-              <span className="text-sm text-neutral-700 truncate max-w-xs">{file.name}</span>
+              <span className="text-sm text-neutral-700 dark:text-neutral-300 truncate max-w-xs">{file.name}</span>
               <span className="text-xs text-neutral-400">({(file.size / 1024).toFixed(1)} KB)</span>
             </div>
             <button onClick={onRemove} className="text-neutral-400 hover:text-red-500">
@@ -350,7 +366,7 @@ export default function SubmitProperty() {
         ) : (
           <div
             onClick={() => ref.current?.click()}
-            className="rounded-lg border-2 border-dashed border-neutral-200 flex flex-col py-6 items-center gap-2 cursor-pointer hover:border-neutral-400 transition-colors"
+            className="rounded-lg border-2 border-dashed border-neutral-200 dark:border-neutral-700 flex flex-col py-6 items-center gap-2 cursor-pointer hover:border-neutral-400 transition-colors"
           >
             <Upload className="size-5 text-neutral-400" />
             <span className="text-neutral-500 text-sm">Click to upload</span>
@@ -390,7 +406,7 @@ export default function SubmitProperty() {
     const ref = useRef<HTMLInputElement>(null);
     return (
       <div className="flex flex-col gap-2">
-        <Label className="font-medium text-neutral-950 text-sm leading-5">
+        <Label className="font-medium text-neutral-950 dark:text-neutral-200 text-sm leading-5">
           {label} {required && <span className="text-red-500">*</span>}
           <span className="font-normal text-neutral-400 ml-1">(max {maxFiles})</span>
         </Label>
@@ -405,7 +421,7 @@ export default function SubmitProperty() {
         {uploadedFiles.length > 0 && (
           <div className="flex flex-col gap-1">
             {uploadedFiles.map((f, i) => (
-              <div key={i} className="rounded-lg border border-neutral-200 flex px-4 py-2 justify-between items-center">
+              <div key={i} className="rounded-lg border border-neutral-200 dark:border-neutral-700 flex px-4 py-2 justify-between items-center">
                 <div className="flex items-center gap-2">
                   <FileCheck2 className="size-4 text-green-600" />
                   <span className="text-sm text-neutral-700 truncate max-w-xs">{f.name}</span>
@@ -471,7 +487,7 @@ export default function SubmitProperty() {
                 </FormField>
                 <FormField label="Mobile Number" required>
                   <div className="flex items-stretch">
-                    <div className="border border-neutral-200 font-medium rounded-l-lg bg-neutral-100 text-neutral-950 text-sm flex px-3 items-center gap-1 h-10">
+                    <div className="border border-neutral-200 dark:border-neutral-700 font-medium rounded-l-lg bg-neutral-100 dark:bg-neutral-800 text-neutral-950 dark:text-neutral-200 text-sm flex px-3 items-center gap-1 h-10">
                       <span>🇮🇳</span>+91
                     </div>
                     <Input className="rounded-l-none rounded-r-lg h-10" placeholder="98765 43210"
@@ -640,7 +656,7 @@ export default function SubmitProperty() {
                       className={`flex items-center justify-between gap-2 rounded-lg border px-3 py-2.5 text-sm transition-colors ${
                         active
                           ? "border-indigo-300 bg-indigo-50 text-indigo-700 font-medium"
-                          : "border-neutral-200 bg-white text-neutral-600 hover:bg-neutral-50"
+                          : "border-neutral-200 dark:border-neutral-700 bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 hover:bg-neutral-50 dark:hover:bg-neutral-700"
                       }`}
                     >
                       <span className="capitalize">{AMENITY_LABELS[key]}</span>
@@ -698,31 +714,79 @@ export default function SubmitProperty() {
       // ── Step 6: Documents ───────────────────────────────────────────────────
       case 6:
         return (
-          <div className="flex flex-col gap-8">
-            <div className="flex flex-col gap-4">
-              <SectionHeader title="Identity & Business Verification" />
-              <div className="grid grid-cols-2 gap-6">
-                <FileUploadBox label="PAN Card" accept=".jpg,.jpeg,.png,.pdf" required
-                  file={files.panCard}
-                  onUpload={(f) => handleSingleFile("panCard", f)}
-                  onRemove={() => removeFile("panCard")} />
-                <FileUploadBox label="GST Certificate (Optional)" accept=".jpg,.jpeg,.png,.pdf"
-                  file={files.gstCertificate}
-                  onUpload={(f) => handleSingleFile("gstCertificate", f)}
-                  onRemove={() => removeFile("gstCertificate")} />
-                <FileUploadBox label="Business Registration Certificate (Optional)" accept=".jpg,.jpeg,.png,.pdf"
-                  file={files.businessRegistrationCertificate}
-                  onUpload={(f) => handleSingleFile("businessRegistrationCertificate", f)}
-                  onRemove={() => removeFile("businessRegistrationCertificate")} />
-                <FileUploadBox label="Property Ownership Proof" accept=".jpg,.jpeg,.png,.pdf" required
-                  file={files.propertyOwnershipProof}
-                  onUpload={(f) => handleSingleFile("propertyOwnershipProof", f)}
-                  onRemove={() => removeFile("propertyOwnershipProof")} />
-                <FileUploadBox label="Trade License (Optional)" accept=".jpg,.jpeg,.png,.pdf"
-                  file={files.tradeLicense}
-                  onUpload={(f) => handleSingleFile("tradeLicense", f)}
-                  onRemove={() => removeFile("tradeLicense")} />
+          <div className="flex flex-col gap-6">
+            {/* DigiLocker promo banner */}
+            <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/40 flex items-center justify-between gap-4 px-5 py-4">
+              <div className="flex items-center gap-4">
+                <div className="size-11 shrink-0 rounded-lg bg-neutral-900 dark:bg-neutral-700 flex items-center justify-center">
+                  <ShieldCheck className="size-5 text-white" />
+                </div>
+                <div className="flex flex-col">
+                  <span className="font-semibold text-neutral-950 dark:text-neutral-100 text-sm leading-5">
+                    Verify Instantly with DigiLocker
+                  </span>
+                  <span className="text-neutral-500 dark:text-neutral-400 text-xs leading-4 max-w-md">
+                    Connect your DigiLocker account to auto-fetch PAN Card and GST Certificate
+                  </span>
+                </div>
               </div>
+              <Button className="rounded-lg bg-neutral-900 hover:bg-neutral-800 text-white shrink-0">
+                Connect DigiLocker
+                <ExternalLink className="size-4" />
+              </Button>
+            </div>
+
+            {/* OR UPLOAD MANUALLY divider */}
+            <div className="flex items-center gap-3">
+              <div className="bg-neutral-200 dark:bg-neutral-800 flex-1 h-px" />
+              <span className="font-medium uppercase text-neutral-400 dark:text-neutral-500 text-xs leading-4 tracking-wide">
+                Or upload manually
+              </span>
+              <div className="bg-neutral-200 dark:bg-neutral-800 flex-1 h-px" />
+            </div>
+
+            {/* Document rows */}
+            <div className="flex flex-col gap-3">
+              <DocumentRow
+                icon={IdCard} title="PAN Card" required
+                subtitle="Identity verification document"
+                accept=".jpg,.jpeg,.png,.pdf"
+                file={files.panCard}
+                onUpload={(f) => handleSingleFile("panCard", f)}
+                onRemove={() => removeFile("panCard")}
+              />
+              <DocumentRow
+                icon={FileText} title="GST Certificate" required
+                subtitle="Goods & Services Tax certificate"
+                accept=".jpg,.jpeg,.png,.pdf"
+                file={files.gstCertificate}
+                onUpload={(f) => handleSingleFile("gstCertificate", f)}
+                onRemove={() => removeFile("gstCertificate")}
+              />
+              <DocumentRow
+                icon={FileText} title="Business Registration Certificate" required
+                subtitle="Company / firm registration proof"
+                accept=".jpg,.jpeg,.png,.pdf"
+                file={files.businessRegistrationCertificate}
+                onUpload={(f) => handleSingleFile("businessRegistrationCertificate", f)}
+                onRemove={() => removeFile("businessRegistrationCertificate")}
+              />
+              <DocumentRow
+                icon={FileText} title="Ownership Proof" required
+                subtitle="Property ownership document"
+                accept=".jpg,.jpeg,.png,.pdf"
+                file={files.propertyOwnershipProof}
+                onUpload={(f) => handleSingleFile("propertyOwnershipProof", f)}
+                onRemove={() => removeFile("propertyOwnershipProof")}
+              />
+              <DocumentRow
+                icon={FileText} title="Lease Agreement"
+                subtitle="Required only if leased property"
+                accept=".jpg,.jpeg,.png,.pdf"
+                file={files.tradeLicense}
+                onUpload={(f) => handleSingleFile("tradeLicense", f)}
+                onRemove={() => removeFile("tradeLicense")}
+              />
             </div>
           </div>
         );
@@ -782,7 +846,7 @@ export default function SubmitProperty() {
               <CheckCircle2 className="size-10 text-green-600" />
             </div>
             <div className="flex flex-col items-center gap-2 text-center">
-              <h2 className="font-bold text-2xl text-neutral-950">Property Submitted!</h2>
+              <h2 className="font-bold text-2xl text-neutral-950 dark:text-neutral-100">Property Submitted!</h2>
               <p className="text-neutral-500 text-sm max-w-sm">
                 Your property has been submitted for verification. You'll be notified once it's reviewed.
               </p>
@@ -821,15 +885,19 @@ export default function SubmitProperty() {
                     <CardTitle className="font-semibold text-neutral-950 dark:text-neutral-100 text-base leading-6">
                       Onboarding Progress
                     </CardTitle>
-                    <span className="font-medium text-neutral-500 text-xs leading-4">
-                      {progress}% Complete
-                    </span>
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-neutral-950 dark:text-neutral-100 text-sm leading-5">
+                        {progress}% Complete
+                      </span>
+                      {progress === 100 && (
+                        <span className="inline-flex items-center gap-1 rounded-full bg-green-100 text-green-700 text-xs font-medium px-2.5 py-1">
+                          <CheckCircle2 className="size-3.5" /> Ready to Submit
+                        </span>
+                      )}
+                    </div>
                   </div>
                 </CardHeader>
                 <CardContent className="flex p-0 flex-col gap-2">
-                  <div className="w-full bg-neutral-200 rounded-full h-1.5 mb-4">
-                    <div className="bg-indigo-600 h-1.5 rounded-full transition-all duration-300" style={{ width: `${progress}%` }} />
-                  </div>
                   <div className="relative flex justify-between items-start">
                     <div className="bg-neutral-200 absolute inset-x-0 top-5 h-0.5" />
                     <div
@@ -860,8 +928,14 @@ export default function SubmitProperty() {
               {currentStep <= 7 && (
                 <CardHeader className="p-0 gap-2">
                   <div className="flex items-center gap-3">
-                    <div className="size-10 rounded-lg bg-indigo-50 flex justify-center items-center">
-                      <UserRound className="size-5 text-indigo-600" />
+                    <div className="size-10 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex justify-center items-center">
+                      {(() => {
+                        const StepIcon = currentStep === 5 ? Upload
+                          : currentStep === 6 ? ShieldCheck
+                          : currentStep === 7 ? FileCheck2
+                          : UserRound;
+                        return <StepIcon className="size-5 text-neutral-700 dark:text-neutral-300" />;
+                      })()}
                     </div>
                     <div className="flex flex-col">
                       <CardTitle className="font-bold text-neutral-950 dark:text-neutral-100 text-xl leading-7">
@@ -986,5 +1060,101 @@ function ReviewRow({ label, value }: { label: string; value: string }) {
       <span className="text-neutral-500 dark:text-neutral-400 text-sm">{label}</span>
       <span className="text-neutral-950 dark:text-neutral-100 text-sm font-medium">{value || "—"}</span>
     </>
+  );
+}
+
+function DocumentRow({
+  icon: Icon,
+  title,
+  subtitle,
+  accept,
+  file,
+  onUpload,
+  onRemove,
+  required = false,
+}: {
+  icon: React.ComponentType<{ className?: string }>;
+  title: string;
+  subtitle: string;
+  accept: string;
+  file: File | null;
+  onUpload: (f: File) => void;
+  onRemove: () => void;
+  required?: boolean;
+}) {
+  const ref = useRef<HTMLInputElement>(null);
+  const uploaded = !!file;
+  return (
+    <div className="rounded-xl border border-neutral-200 dark:border-neutral-800 bg-white dark:bg-neutral-900 flex items-center justify-between gap-4 px-4 py-3.5">
+      {/* Left: icon + title + subtitle */}
+      <div className="flex items-center gap-3 min-w-0">
+        <div className="size-10 shrink-0 rounded-lg bg-neutral-100 dark:bg-neutral-800 flex items-center justify-center">
+          <Icon className="size-5 text-neutral-600 dark:text-neutral-300" />
+        </div>
+        <div className="flex flex-col min-w-0">
+          <div className="flex items-center gap-2">
+            <span className="font-semibold text-neutral-950 dark:text-neutral-100 text-sm leading-5 truncate">
+              {title}
+            </span>
+            <span
+              className={`shrink-0 rounded-md text-[11px] font-medium px-1.5 py-0.5 ${
+                required
+                  ? "bg-red-50 text-red-600 dark:bg-red-950/40 dark:text-red-400"
+                  : "bg-neutral-100 text-neutral-500 dark:bg-neutral-800 dark:text-neutral-400"
+              }`}
+            >
+              {required ? "Required" : "Optional"}
+            </span>
+          </div>
+          <span className="text-neutral-500 dark:text-neutral-400 text-xs leading-4 truncate">
+            {uploaded ? file!.name : subtitle}
+          </span>
+        </div>
+      </div>
+
+      {/* Right: status */}
+      <div className="flex items-center gap-3 shrink-0">
+        {uploaded ? (
+          <>
+            <span className="inline-flex items-center gap-1 rounded-full bg-green-100 text-green-700 dark:bg-green-950/40 dark:text-green-400 text-xs font-medium px-2.5 py-1">
+              <Check className="size-3.5" /> Uploaded
+            </span>
+            <button
+              onClick={() => ref.current?.click()}
+              className="text-neutral-500 dark:text-neutral-400 hover:text-neutral-900 dark:hover:text-neutral-100 text-sm font-medium"
+            >
+              Replace
+            </button>
+            <button
+              onClick={onRemove}
+              className="text-neutral-400 hover:text-red-500"
+            >
+              <X className="size-4" />
+            </button>
+          </>
+        ) : (
+          <>
+            <span className="inline-flex items-center gap-1 text-neutral-400 dark:text-neutral-500 text-xs font-medium">
+              <span className="size-2 rounded-full border border-neutral-300 dark:border-neutral-600" />
+              Not Uploaded
+            </span>
+            <Button
+              variant="outline"
+              className="rounded-lg h-9"
+              onClick={() => ref.current?.click()}
+            >
+              <Upload className="size-4" /> Upload
+            </Button>
+          </>
+        )}
+        <input
+          ref={ref}
+          type="file"
+          accept={accept}
+          className="hidden"
+          onChange={(e) => e.target.files?.[0] && onUpload(e.target.files[0])}
+        />
+      </div>
+    </div>
   );
 }

@@ -76,9 +76,9 @@ export default function AdminDashboard() {
   ];
 
   return (
-    <div className="bg-white text-neutral-950 flex w-full min-h-screen">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 flex w-full min-h-screen">
       <AdminSidebar pendingCount={stats?.pending} />
-      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+      <main className="bg-neutral-50 dark:bg-neutral-950 flex flex-col flex-1 overflow-hidden">
         <AdminHeader title="Dashboard" />
 
         <div className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
@@ -87,14 +87,14 @@ export default function AdminDashboard() {
           ) : (
             <>
               <div className="flex flex-col gap-1">
-                <h2 className="font-bold text-2xl text-neutral-900">Welcome back, Admin</h2>
+                <h2 className="font-bold text-2xl text-neutral-900 dark:text-neutral-100">Welcome back, Admin</h2>
                 <p className="text-neutral-500 text-sm">{today}</p>
               </div>
 
               {/* Stat cards */}
               <div className="grid grid-cols-5 gap-4 max-xl:grid-cols-3 max-md:grid-cols-2">
                 {cards.map((c) => (
-                  <Card key={c.label} className="border border-neutral-200 shadow-sm bg-white p-5 gap-3">
+                  <Card key={c.label} className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-5 gap-3">
                     <div className="flex justify-between items-start">
                       <span className="text-neutral-500 text-xs uppercase tracking-wide font-medium">
                         {c.label}
@@ -103,7 +103,7 @@ export default function AdminDashboard() {
                         {c.icon}
                       </div>
                     </div>
-                    <span className="font-bold text-3xl leading-9">{c.value.toLocaleString("en-IN")}</span>
+                    <span className="font-bold text-3xl leading-9 dark:text-neutral-100">{c.value.toLocaleString("en-IN")}</span>
                     <span className="text-neutral-400 text-xs">{c.sub}</span>
                   </Card>
                 ))}
@@ -132,10 +132,10 @@ export default function AdminDashboard() {
               </div>
 
               {/* Recent submissions */}
-              <Card className="border border-neutral-200 shadow-sm bg-white p-6">
+              <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-6">
                 <div className="flex justify-between items-center pb-4">
                   <div className="flex flex-col">
-                    <h3 className="font-bold text-base">Recent Submissions</h3>
+                    <h3 className="font-bold text-base dark:text-neutral-100">Recent Submissions</h3>
                     <span className="text-neutral-500 text-xs">Latest 5 property applications</span>
                   </div>
                   <Link
@@ -151,7 +151,7 @@ export default function AdminDashboard() {
                 ) : (
                   <table className="text-sm w-full">
                     <thead>
-                      <tr className="text-left text-neutral-400 border-b border-neutral-200 text-xs uppercase tracking-wide">
+                      <tr className="text-left text-neutral-400 border-b border-neutral-200 dark:border-neutral-800 text-xs uppercase tracking-wide">
                         <th className="font-medium pb-3">App ID</th>
                         <th className="font-medium pb-3">Property Name</th>
                         <th className="font-medium pb-3">Owner</th>
@@ -164,9 +164,9 @@ export default function AdminDashboard() {
                     </thead>
                     <tbody>
                       {recent.map((p) => (
-                        <tr key={p._id} className="border-b border-neutral-100 last:border-0">
+                        <tr key={p._id} className="border-b border-neutral-100 dark:border-neutral-800 last:border-0">
                           <td className="py-3 text-neutral-500 font-mono text-xs">{p.applicationId}</td>
-                          <td className="py-3 font-medium text-neutral-900">{p.propertyName}</td>
+                          <td className="py-3 font-medium text-neutral-900 dark:text-neutral-100">{p.propertyName}</td>
                           <td className="py-3 text-neutral-600">{p.ownerFullName}</td>
                           <td className="py-3 text-neutral-600">{p.propertyType}</td>
                           <td className="py-3 text-neutral-600">{p.city}</td>

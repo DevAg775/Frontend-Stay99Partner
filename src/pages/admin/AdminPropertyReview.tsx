@@ -90,12 +90,12 @@ function Section({
   children: React.ReactNode;
 }) {
   return (
-    <Card className="border border-neutral-200 shadow-sm bg-white p-5 gap-4">
+    <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-5 gap-4">
       <div className="flex items-center gap-3">
-        <div className="size-7 rounded-full bg-neutral-900 text-white text-xs font-semibold flex items-center justify-center">
+        <div className="size-7 rounded-full bg-neutral-900 dark:bg-indigo-600 text-white text-xs font-semibold flex items-center justify-center">
           {num}
         </div>
-        <div className="flex items-center gap-2 text-neutral-900">
+        <div className="flex items-center gap-2 text-neutral-900 dark:text-neutral-100">
           {icon}
           <h3 className="font-semibold text-sm">{title}</h3>
         </div>
@@ -109,7 +109,7 @@ function Field({ label, value }: { label: string; value?: React.ReactNode }) {
   return (
     <div className="flex flex-col gap-0.5">
       <span className="text-neutral-400 text-xs uppercase tracking-wide">{label}</span>
-      <span className="text-neutral-900 text-sm font-medium">{value || "—"}</span>
+      <span className="text-neutral-900 dark:text-neutral-100 text-sm font-medium">{value || "—"}</span>
     </div>
   );
 }
@@ -174,9 +174,9 @@ export default function AdminPropertyReview() {
 
   if (loading) {
     return (
-      <div className="bg-white flex w-full min-h-screen">
+      <div className="bg-white dark:bg-neutral-950 flex w-full min-h-screen">
         <AdminSidebar />
-        <main className="bg-neutral-50 flex-1 flex items-center justify-center text-neutral-500">
+        <main className="bg-neutral-50 dark:bg-neutral-950 flex-1 flex items-center justify-center text-neutral-500">
           Loading...
         </main>
       </div>
@@ -185,9 +185,9 @@ export default function AdminPropertyReview() {
 
   if (!property) {
     return (
-      <div className="bg-white flex w-full min-h-screen">
+      <div className="bg-white dark:bg-neutral-950 flex w-full min-h-screen">
         <AdminSidebar />
-        <main className="bg-neutral-50 flex-1 flex items-center justify-center text-neutral-500">
+        <main className="bg-neutral-50 dark:bg-neutral-950 flex-1 flex items-center justify-center text-neutral-500">
           Property not found.
         </main>
       </div>
@@ -227,9 +227,9 @@ export default function AdminPropertyReview() {
   ];
 
   return (
-    <div className="bg-white text-neutral-950 flex w-full min-h-screen">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 flex w-full min-h-screen">
       <AdminSidebar />
-      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+      <main className="bg-neutral-50 dark:bg-neutral-950 flex flex-col flex-1 overflow-hidden">
         <AdminHeader
           breadcrumb={[
             { label: "Properties", to: "/admin/properties" },
@@ -247,7 +247,7 @@ export default function AdminPropertyReview() {
                 </span>
                 <StatusPill status={property.verificationStatus} />
               </div>
-              <h1 className="font-bold text-2xl text-neutral-900">{property.propertyName}</h1>
+              <h1 className="font-bold text-2xl text-neutral-900 dark:text-neutral-100">{property.propertyName}</h1>
               <p className="text-neutral-500 text-sm">
                 Submitted {new Date(property.submissionDate).toLocaleDateString("en-IN")} ·{" "}
                 {property.ownerFullName}
@@ -358,11 +358,11 @@ export default function AdminPropertyReview() {
                     return (
                       <div
                         key={d.key}
-                        className="flex items-center justify-between rounded-lg border border-neutral-200 px-4 py-2.5"
+                        className="flex items-center justify-between rounded-lg border border-neutral-200 dark:border-neutral-700 px-4 py-2.5"
                       >
                         <div className="flex items-center gap-2.5">
                           <FileText className="size-4 text-neutral-400" />
-                          <span className="text-sm text-neutral-700">{d.label}</span>
+                          <span className="text-sm text-neutral-700 dark:text-neutral-300">{d.label}</span>
                           {d.required && (
                             <span className="text-[10px] font-medium rounded bg-neutral-100 text-neutral-500 px-1.5 py-0.5">
                               Required
@@ -399,8 +399,8 @@ export default function AdminPropertyReview() {
 
             {/* Right column */}
             <div className="flex flex-col gap-4">
-              <Card className="border border-neutral-200 shadow-sm bg-white p-5 gap-4">
-                <h3 className="font-semibold text-sm text-neutral-900">Take Action</h3>
+              <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-5 gap-4">
+                <h3 className="font-semibold text-sm text-neutral-900 dark:text-neutral-100">Take Action</h3>
                 <div className="flex flex-col gap-1.5">
                   <label className="text-neutral-500 text-xs">Review Notes</label>
                   <Textarea
@@ -446,8 +446,8 @@ export default function AdminPropertyReview() {
                 </Button>
               </Card>
 
-              <Card className="border border-neutral-200 shadow-sm bg-white p-5 gap-4">
-                <h3 className="font-semibold text-sm text-neutral-900">Status Timeline</h3>
+              <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-5 gap-4">
+                <h3 className="font-semibold text-sm text-neutral-900 dark:text-neutral-100">Status Timeline</h3>
                 <div className="flex flex-col">
                   {timeline.map((t, i) => (
                     <div key={i} className="flex gap-3">
@@ -462,7 +462,7 @@ export default function AdminPropertyReview() {
                         )}
                       </div>
                       <div className="flex flex-col pb-4">
-                        <span className={`text-sm font-medium ${t.done ? "text-neutral-900" : "text-neutral-400"}`}>
+                        <span className={`text-sm font-medium ${t.done ? "text-neutral-900 dark:text-neutral-100" : "text-neutral-400"}`}>
                           {t.label}
                         </span>
                         <span className="text-xs text-neutral-400">{t.note}</span>

@@ -9,7 +9,7 @@ import {
   Mail,
   Zap,
 } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Link, useNavigate } from "react-router-dom";
@@ -21,6 +21,12 @@ export default function Screen2() {
   const [showPassword, setShowPassword] = useState(false);
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+
+  // Already logged in? Skip the login page and go to the user dashboard.
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) navigate("/dashboard", { replace: true });
+  }, [navigate]);
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();

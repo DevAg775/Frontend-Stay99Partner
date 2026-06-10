@@ -130,9 +130,9 @@ export default function AdminExport() {
   };
 
   return (
-    <div className="bg-white text-neutral-950 flex w-full min-h-screen">
+    <div className="bg-white dark:bg-neutral-950 text-neutral-950 dark:text-neutral-100 flex w-full min-h-screen">
       <AdminSidebar />
-      <main className="bg-neutral-50 flex flex-col flex-1 overflow-hidden">
+      <main className="bg-neutral-50 dark:bg-neutral-950 flex flex-col flex-1 overflow-hidden">
         <AdminHeader title="Export Data" />
 
         <div className="flex p-8 flex-col flex-1 gap-6 overflow-auto">
@@ -142,17 +142,17 @@ export default function AdminExport() {
               <Download className="size-5 text-indigo-600" />
             </div>
             <div className="flex flex-col">
-              <h2 className="font-bold text-2xl text-neutral-900">Export Data</h2>
+              <h2 className="font-bold text-2xl text-neutral-900 dark:text-neutral-100">Export Data</h2>
               <p className="text-neutral-500 text-sm">
                 Download property and user data as Excel or CSV files
               </p>
             </div>
           </div>
 
-          <Card className="border border-neutral-200 shadow-sm bg-white p-0 overflow-hidden max-w-4xl">
-            <div className="flex items-center gap-2 px-6 py-4 border-b border-neutral-200">
-              <FileText className="size-5 text-neutral-700" />
-              <h3 className="font-semibold text-base">Export Configuration</h3>
+          <Card className="border border-neutral-200 dark:border-neutral-800 shadow-sm bg-white dark:bg-neutral-900 p-0 overflow-hidden max-w-4xl">
+            <div className="flex items-center gap-2 px-6 py-4 border-b border-neutral-200 dark:border-neutral-800">
+              <FileText className="size-5 text-neutral-700 dark:text-neutral-300" />
+              <h3 className="font-semibold text-base dark:text-neutral-100">Export Configuration</h3>
             </div>
 
             <div className="p-6 flex flex-col gap-7">
@@ -163,17 +163,17 @@ export default function AdminExport() {
                 </span>
                 <div className="grid grid-cols-2 gap-4">
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-neutral-700">From Date</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">From Date</label>
                     <input
                       type="date"
-                      className="rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 outline-none focus:border-indigo-400"
+                      className="rounded-lg border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200 outline-none focus:border-indigo-400"
                     />
                   </div>
                   <div className="flex flex-col gap-1.5">
-                    <label className="text-sm font-medium text-neutral-700">To Date</label>
+                    <label className="text-sm font-medium text-neutral-700 dark:text-neutral-300">To Date</label>
                     <input
                       type="date"
-                      className="rounded-lg border border-neutral-200 px-3 py-2 text-sm text-neutral-700 outline-none focus:border-indigo-400"
+                      className="rounded-lg border border-neutral-200 dark:border-neutral-700 dark:bg-neutral-800 px-3 py-2 text-sm text-neutral-700 dark:text-neutral-200 outline-none focus:border-indigo-400"
                     />
                   </div>
                 </div>
@@ -185,7 +185,7 @@ export default function AdminExport() {
                       className={`rounded-full border px-3 py-1.5 text-xs font-medium transition-colors ${
                         preset === d
                           ? "bg-indigo-600 text-white border-indigo-600"
-                          : "bg-white text-neutral-600 border-neutral-200 hover:bg-neutral-50"
+                          : "bg-white dark:bg-neutral-800 text-neutral-600 dark:text-neutral-300 border-neutral-200 dark:border-neutral-700 hover:bg-neutral-50 dark:hover:bg-neutral-700"
                       }`}
                     >
                       {d}
@@ -203,7 +203,7 @@ export default function AdminExport() {
                   {STATUS_FILTERS.map((s) => (
                     <label
                       key={s.key}
-                      className="flex items-center gap-2 rounded-full border border-neutral-200 px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-neutral-50"
+                      className="flex items-center gap-2 rounded-full border border-neutral-200 dark:border-neutral-700 px-3 py-1.5 text-xs font-medium cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800"
                     >
                       <input
                         type="checkbox"
@@ -226,7 +226,7 @@ export default function AdminExport() {
                   {DATA_FIELDS.map((f) => (
                     <label
                       key={f.key}
-                      className="flex items-center gap-2.5 rounded-lg border border-neutral-200 px-4 py-3 text-sm cursor-pointer hover:bg-neutral-50"
+                      className="flex items-center gap-2.5 rounded-lg border border-neutral-200 dark:border-neutral-700 px-4 py-3 text-sm cursor-pointer hover:bg-neutral-50 dark:hover:bg-neutral-800"
                     >
                       <input
                         type="checkbox"
@@ -234,7 +234,7 @@ export default function AdminExport() {
                         onChange={() => toggleField(f.key)}
                         className="accent-indigo-600 size-4"
                       />
-                      <span className="text-neutral-700">{f.label}</span>
+                      <span className="text-neutral-700 dark:text-neutral-300">{f.label}</span>
                     </label>
                   ))}
                 </div>
@@ -242,9 +242,9 @@ export default function AdminExport() {
             </div>
 
             {/* Footer */}
-            <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 bg-neutral-50">
-              <span className="text-sm text-neutral-600">
-                Estimated records: <span className="font-semibold text-neutral-900">{estimated} properties</span>
+            <div className="flex items-center justify-between px-6 py-4 border-t border-neutral-200 dark:border-neutral-800 bg-neutral-50 dark:bg-neutral-800/50">
+              <span className="text-sm text-neutral-600 dark:text-neutral-300">
+                Estimated records: <span className="font-semibold text-neutral-900 dark:text-neutral-100">{estimated} properties</span>
               </span>
               <div className="flex items-center gap-2">
                 <button className="flex items-center gap-1.5 text-sm text-neutral-500 hover:text-neutral-800">
@@ -273,10 +273,10 @@ export default function AdminExport() {
           </Card>
 
           {/* Compliance note */}
-          <div className="rounded-lg bg-white border border-neutral-200 flex p-4 items-start gap-2.5 max-w-4xl">
+          <div className="rounded-lg bg-white dark:bg-neutral-900 border border-neutral-200 dark:border-neutral-800 flex p-4 items-start gap-2.5 max-w-4xl">
             <ShieldCheck className="size-4 shrink-0 text-neutral-500 mt-0.5" />
-            <p className="text-neutral-500 text-sm leading-5">
-              <span className="font-medium text-neutral-700">All exports are logged for compliance.</span>{" "}
+            <p className="text-neutral-500 dark:text-neutral-400 text-sm leading-5">
+              <span className="font-medium text-neutral-700 dark:text-neutral-300">All exports are logged for compliance.</span>{" "}
               Data is encrypted in transit. Exports contain personally identifiable information — handle with care.
             </p>
           </div>
