@@ -19,9 +19,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link, useNavigate } from "react-router-dom";
 import API from "../api";
+import { useForceLight } from "@/lib/useForceLight";
 
 export default function Register() {
   const navigate = useNavigate();
+  useForceLight();
 
   const [formData, setFormData] = useState({
     fullName: "",

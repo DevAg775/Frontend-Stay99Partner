@@ -1,4 +1,5 @@
 import { BrowserRouter, Routes, Route, Link, Navigate } from "react-router-dom";
+import { useForceLight } from "@/lib/useForceLight";
 import {
   ArrowRight,
   BadgeCheck,
@@ -48,6 +49,10 @@ function RequireAdmin({ children }: { children: React.ReactNode }) {
 }
 
 function Home() {
+  // Public landing page is a light-only design — keep it light even if the
+  // user enabled dark mode inside the app (restored automatically on unmount).
+  useForceLight();
+
   return (
     <div>
       <div className="bg-white text-neutral-950 w-full min-h-screen overflow-visible">

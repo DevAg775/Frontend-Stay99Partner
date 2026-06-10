@@ -13,9 +13,11 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useNavigate } from "react-router-dom";
 import API from "@/api";
+import { useForceLight } from "@/lib/useForceLight";
 
 export default function AdminLogin() {
   const navigate = useNavigate();
+  useForceLight();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);

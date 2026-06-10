@@ -20,8 +20,10 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Link } from "react-router-dom";
+import { useForceLight } from "@/lib/useForceLight";
 
 export default function ForgotPassword() {
+  useForceLight();
   const [email, setEmail] = useState("");
   const [sent, setSent] = useState(false);
 
