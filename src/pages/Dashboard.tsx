@@ -14,6 +14,7 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { Link, useNavigate } from "react-router-dom";
 import Sidebar from "@/components/ui/sidebar";
 import Header from "@/components/ui/header";
+import API from "@/api";
 
 interface Property {
   _id: string;
@@ -126,35 +127,28 @@ export default function Dashboard() {
     fetchProperties(token);
   }, []);
 
-  const fetchProperties = async (token: string) => {
-    try {
-      const res = await fetch("http://localhost:5000/api/properties/my", {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-      const data = await res.json();
+  const fetchProperties = async () => {
+  try {
+    const { data } = await API.get("/properties/my");
 
-      if (!res.ok) {
-        if (res.status === 401) navigate("/login");
-        return;
-      }
-
-      setProperties(data);
-      setStats({
-        total: data.length,
-        approved: data.filter((p: Property) => p.verificationStatus === "approved").length,
-        pending: data.filter(
-          (p: Property) =>
-            p.verificationStatus === "pending" ||
-            p.verificationStatus === "under_review"
-        ).length,
-        rejected: data.filter((p: Property) => p.verificationStatus === "rejected").length,
-      });
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    setProperties(data);
+    setStats({
+      total: data.length,
+      approved: data.filter((p: Property) => p.verificationStatus === "approved").length,
+      pending: data.filter(
+        (p: Property) =>
+          p.verificationStatus === "pending" ||
+          p.verificationStatus === "under_review"
+      ).length,
+      rejected: data.filter((p: Property) => p.verificationStatus === "rejected").length,
+    });
+  } catch (err: any) {
+    if (err.response?.status === 401) navigate("/login");
+    console.error(err);
+  } finally {
+    setLoading(false);
+  }
+};
 
   const getStatusBadge = (status: string) => {
     switch (status) {

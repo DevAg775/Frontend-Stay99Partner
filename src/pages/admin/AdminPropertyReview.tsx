@@ -22,9 +22,8 @@ import AdminHeader from "@/components/admin/AdminHeader";
 import StatusPill from "@/components/admin/StatusPill";
 import API from "@/api";
 
-const ORIGIN = "http://localhost:5000";
 const fileUrl = (p?: string) =>
-  !p ? "" : p.startsWith("http") ? p : `${ORIGIN}/${p.replace(/^\/+/, "")}`;
+  !p ? "" : p.startsWith("http") ? p : `${API.defaults.baseURL?.replace("/api", "")}/${p.replace(/^\/+/, "")}`;
 
 const AMENITY_LABELS: Record<string, string> = {
   wifi: "Free WiFi",
