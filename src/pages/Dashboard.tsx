@@ -124,7 +124,7 @@ export default function Dashboard() {
       navigate("/login");
       return;
     }
-    fetchProperties(token);
+    fetchProperties();
   }, []);
 
   const fetchProperties = async () => {
